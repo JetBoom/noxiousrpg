@@ -1,0 +1,13 @@
+"Gamemode"
+{
+	"name"		"Unnamed"
+	"version"	"1.0"
+
+	"author_name"	"JetBoom"
+	"author_email"	"williammoodhe@gmail.com"
+	"author_url"	"http://www.noxiousnet.com/"
+
+	"icon"		""
+	"info"		"???"
+	"hide"		"0"
+}
