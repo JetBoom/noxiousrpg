@@ -37,6 +37,10 @@ end)
 
 w, h = ScrW(), ScrH()
 
+function BetterScreenScale() 
+	return math.max(ScrH() / 1080, 0.851)
+end
+
 function BroadcastLua(str)
 	RunString(str)
 end
@@ -211,34 +215,27 @@ end
 
 function GM:Initialize()
 	gamemode.Call("CreateFonts")
-	gamemode.Call("ParseParticleManifests")
 	gamemode.Call("InitializeSoundSets")
 	gamemode.Call("LoadHotBars")
 	gamemode.Call("CreateHotBar")
 end
 
 function GM:CreateFonts()
-	--surface.CreateFont("tahoma", 22, 600, true, false, "rpg_notice", true)
-	surface.CreateFont("MasonAlternate", 32, 0, true, false, "rpg_notice", true)
 
-	--surface.CreateFont("coolvetica", 24, 500, true, false, "rpg_targetid_item")
-	surface.CreateFont("MasonAlternate", 24, 0, true, false, "rpg_targetid_item", true)
-
-	--surface.CreateFont("coolvetica", 24, 0, false, false, "rpg_talk")
-	surface.CreateFont("MasonAlternate", 24, 0, true, false, "rpg_talk")
-
-	surface.CreateFont("MasonAlternate", 22, 0, true, false, "rpg_derma_default")
-	surface.CreateFont("MasonAlternate", 18, 0, true, false, "rpg_derma_small")
+	surface.CreateFont("rpg_notice", {font = "MasonAlternate", size = 32, weight = 0, shadow = true})
+	surface.CreateFont("rpg_targetid_item", {font = "MasonAlternate", size = 24, weight = 0, shadow = true})
+	surface.CreateFont("rpg_talk", {font = "MasonAlternate", size = 24, weight = 0})
+	surface.CreateFont("rpg_derma_default", {font = "MasonAlternate", size = 22, weight = 0})
+	surface.CreateFont("rpg_derma_small", {font = "MasonAlternate", size = 18, weight = 0})
 
 	for i=8, 64, 2 do
-		surface.CreateFont("tahoma", i, 300, true, false, "tahoma"..i)
-		surface.CreateFont("akbar", i, 300, true, false, "akbar"..i)
-		surface.CreateFont("coolvetica", i, 300, true, false, "coolvetica"..i)
-
-		surface.CreateFont("MasonAlternate", i, 300, true, false, "mason"..i)
-		surface.CreateFont("SteveHandwriting", i, 300, true, false, "steve"..i)
-		surface.CreateFont("Carleton", i, 300, true, false, "carleton"..i)
-		surface.CreateFont("Dauphin", i, 300, true, false, "dauphin"..i)
+		surface.CreateFont("tahoma"..i, {font = "tahoma", size = i, weight = 300})
+		surface.CreateFont("akbar"..i, {font = "akbar", size = i, weight = 300})
+		surface.CreateFont("coolvetica"..i, {font = "coolvetica", size = i, weight = 300})
+		surface.CreateFont("mason"..i, {font = "MasonAlternate", size = i, weight = 300})
+		surface.CreateFont("steve"..i, {font = "SteveHandwriting", size = i, weight = 300})
+		surface.CreateFont("carleton"..i, {font = "Carleton", size = i, weight = 300})
+		surface.CreateFont("dauphin"..i, {font = "Dauphin", size = i, weight = 300})
 	end
 end
 

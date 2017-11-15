@@ -29,7 +29,7 @@ end
 function GetEffectFlagsAndSeparated(flags)
 	local list = {}
 	for flag, desc in pairs(SPELLENCHANT_EFFECTS) do
-		if flags & flag == flag then
+		if bit.band(flags, flag) == flag then
 			list[#list + 1] = desc
 		end
 	end

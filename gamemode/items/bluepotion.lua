@@ -18,7 +18,7 @@ if SERVER then
 			pl.NextPotion = CurTime() + POTION_REDRINKTIME
 			pl:SetMana(math.min(maxmana, curmana + 30))
 
-			pl:SendLua("GAMEMODE:AddNotify(\)")
+			-- pl:SendLua("GAMEMODE:AddNotify()")
 			pl:SendMessage("You drank the "..self.Name.." and gained ".. math.ceil((pl:GetMana() - curmana) * 10) * 0.1 .." mana.", "COLOR_LIMEGREEN", true)
 
 			return ITEM_ONUSE_DECREMENT

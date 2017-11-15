@@ -193,7 +193,7 @@ local function Register()
 end
 
 do
-local itemfiles = file.FindInLua("noxiousrpg/gamemode/items/*.lua")
+local itemfiles = file.Find("noxiousrpg/gamemode/items/*.lua", "LUA")
 table.sort(itemfiles, function(a, b)
 	local aisbase = string.find(a, "base") ~= nil
 	local bisbase = string.find(b, "base") ~= nil

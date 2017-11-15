@@ -8,6 +8,8 @@ GM.Credits = {
 {"William \"JetBoom\" Moodhe", "http://www.noxiousnet.com (williammoodhe@gmail.com)", "Project Lead / Programmer"}
 }
 
+include("sh_hack.lua")
+
 include("sh_globals.lua")
 
 include("sh_soundset.lua")
@@ -103,10 +105,6 @@ function GM:InitializeSoundSets()
 
 	soundset.Add(SOUNDSET_MELEE_BLUNT_5, SOUNDSUBSET_MELEE_SWING, "rpgsounds/swing3.wav")
 	soundset.Add(SOUNDSET_MELEE_BLUNT_5, SOUNDSUBSET_MELEE_HIT_FLESH, "rpgsounds/impact_flesh_blunt5.wav")
-end
-
-function GM:ParseParticleManifests()
-	ParseParticleManifest("rpg_0001")
 end
 
 function GM:PlayerShouldTakeDamage(victim, attacker)
@@ -229,7 +227,7 @@ function GM:GetWeather()
 end
 
 function GM:IsWeather(weatherid)
-	return self:GetWeather() & weatherid == weatherid
+	return bit.band(self:GetWeather(), weatherid) == weatherid
 end
 
 function GM:GetPreviousWeather()
@@ -295,7 +293,7 @@ function GM:OnPlayerHitGround(pl, inwater, hitfloater, speed)
 		if on_floater then damage = damage / 2 end
 
 		if math.floor(damage) > 0 then
-			pl:TakeNonLethalDamage(damage, DMG_FALL, GetWorldEntity(), GetWorldEntity())
+			pl:TakeNonLethalDamage(damage, DMG_FALL, game.GetWorld(), game.GetWorld())
 			--pl:EmitSound("player/damage"..math.random(1, 3)..".wav", pl:GetPos(), 50 + math.Clamp(damage * 2, 0, 30), 100)
 			pl:EmitSound("player/pl_fallpain"..(math.random(0, 1) == 1 and 3 or 1)..".wav")
 		end

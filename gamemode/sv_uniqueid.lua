@@ -1,4 +1,4 @@
-local uid = tonumber(file.Read("rpguid.txt")) or 2049
+local uid = tonumber(file.Read("rpguid.txt", "DATA") or 2049) 
 
 function GetUID()
 	uid = uid + 1

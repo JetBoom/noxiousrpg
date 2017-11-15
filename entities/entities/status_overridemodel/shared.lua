@@ -6,7 +6,7 @@ ENT.Base = "status__base"
 function ENT:Initialize()
 	self:SetSolid(SOLID_NONE)
 	self:SetMoveType(MOVETYPE_NONE)
-	self:AddEffects(EF_BONEMERGE | EF_PARENT_ANIMATES)
+	self:AddEffects(bit.bor(EF_BONEMERGE, EF_PARENT_ANIMATES))
 
 	local pPlayer = self:GetOwner()
 	if pPlayer:IsValid() then

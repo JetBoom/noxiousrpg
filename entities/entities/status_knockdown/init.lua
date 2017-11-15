@@ -33,7 +33,7 @@ function ENT:PlayerSet(pPlayer, bExists)
 
 	self:SetEndTime(self.DieTime)
 
-	pPlayer:StatusWeaponHook("PlayerKnockedDown", self, bExists, self:GetEndTime())
+	pPlayer:StatusWeaponHook3("PlayerKnockedDown", self, bExists, self:GetEndTime())
 	pPlayer:CallMonsterFunction("PlayerKnockedDown", self, bExists, self:GetEndTime())
 end
 

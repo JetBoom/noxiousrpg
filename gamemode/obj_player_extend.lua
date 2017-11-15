@@ -189,7 +189,7 @@ function meta:IsGhost()
 end
 
 function meta:HitWithProjectile(ent, data)
-	return self:StatusWeaponHook("HitWithProjectile", ent, data)
+	return self:StatusWeaponHook2("HitWithProjectile", ent, data)
 end
 
 function meta:InsertRPGData(tab)
@@ -417,8 +417,8 @@ function meta:CallCastSpellEnchantments(...)
 end
 
 function meta:ProcessDamage(attacker, inflictor, dmginfo)
-	self:StatusWeaponHook("ProcessDamage", attacker, inflictor, dmginfo)
-	self:StatusWeaponHook("PostProcessDamage", attacker, inflictor, dmginfo)
+	self:StatusWeaponHook3("ProcessDamage", attacker, inflictor, dmginfo)
+	self:StatusWeaponHook3("PostProcessDamage", attacker, inflictor, dmginfo)
 
 	--[[local damagetype = dmginfo:GetDamageType()
 	if STAMINA_DAMAGE[damagetype] then
@@ -437,13 +437,13 @@ function meta:ShouldNotCollide(ent)
 end
 
 function meta:HitReset()
-	return self:StatusWeaponHook("HitReset")
+	return self:StatusWeaponHook0("HitReset")
 end
 
 function meta:IsIdle(skipcastingcheck)
 	if self:IsFrozen() or not skipcastingcheck and self:IsCasting() then return false end
 
-	local ret = self:StatusWeaponHook("IsIdle")
+	local ret = self:StatusWeaponHook0("IsIdle")
 	if ret ~= nil then return ret end
 
 	return true
@@ -794,7 +794,7 @@ function meta:GetSpellTarget()
 end
 
 function meta:ConvertNet()
-	return ConvertNet(self:SteamID())
+	return self:SteamID64()
 end
 
 function meta:AddFrozenPhysicsObject(ent, phys)
@@ -876,6 +876,10 @@ function meta:RPGName(viewer)
 	end
 
 	return self:Name()
+end
+
+function meta:NoParseName(viewer)
+	return "<noparse>"..self:Name().."</noparse>"
 end
 
 function meta:RPGNoParseName(viewer)
@@ -1012,14 +1016,14 @@ function meta:ResetSpeed(skill)
 		self:SetSpeed(300)
 	else
 		stat.Start(self:CallMonsterFunction("GetSpeed", skill) or GAMEMODE:GetPlayerSpeed(skill or self:GetSkill(SKILL_DEXTERITY)))
-			self:StatusWeaponHook("ResetSpeed")
+			self:StatusWeaponHook0("ResetSpeed")
 		self:SetSpeed(stat.End())
 	end
 end
 
 function meta:ResetJumpPower(skill)
 	stat.Start(self:CallMonsterFunction("GetJumpPower", skill) or GAMEMODE:GetPlayerJumpPower(skill or self:GetSkill(SKILL_DEXTERITY)))
-		self:StatusWeaponHook("ResetJumpPower")
+		self:StatusWeaponHook0("ResetJumpPower")
 	self:SetJumpPower(stat.End())
 end
 
@@ -1029,4 +1033,95 @@ end]]
 
 function meta:GetMaxMana()
 	return self.MaxMana or 0
+end
+
+-- Try not to use this version, varargs are slow.
+function meta:StatusWeaponHook(func, ...)
+	for _, ent in pairs(ents.FindByClass("status*")) do
+		if ent:GetOwner() == self then
+			if ent[func] then
+				ent[func](ent, ...)
+			end
+		end
+	end
+
+	local wep = self:GetActiveWeapon()
+	if wep:IsValid() and wep[func] then
+		wep[func](wep, ...)
+	end
+end
+
+function meta:StatusWeaponHook0(func)
+	for _, ent in pairs(ents.FindByClass("status*")) do
+		if ent:GetOwner() == self then
+			if ent[func] then
+				ent[func](ent)
+			end
+		end
+	end
+
+	local wep = self:GetActiveWeapon()
+	if wep:IsValid() and wep[func] then
+		wep[func](wep)
+	end
+end
+
+function meta:StatusWeaponHook1(func, a)
+	for _, ent in pairs(ents.FindByClass("status*")) do
+		if ent:GetOwner() == self then
+			if ent[func] then
+				ent[func](ent, a)
+			end
+		end
+	end
+
+	local wep = self:GetActiveWeapon()
+	if wep:IsValid() and wep[func] then
+		wep[func](wep, a)
+	end
+end
+
+function meta:StatusWeaponHook2(func, a, b)
+	for _, ent in pairs(ents.FindByClass("status*")) do
+		if ent:GetOwner() == self then
+			if ent[func] then
+				ent[func](ent, a, b)
+			end
+		end
+	end
+
+	local wep = self:GetActiveWeapon()
+	if wep:IsValid() and wep[func] then
+		wep[func](wep, a, b)
+	end
+end
+
+function meta:StatusWeaponHook3(func, a, b, c)
+	for _, ent in pairs(ents.FindByClass("status*")) do
+		if ent:GetOwner() == self then
+			if ent[func] then
+				ent[func](ent, a, b, c)
+			end
+		end
+	end
+
+	local wep = self:GetActiveWeapon()
+	if wep:IsValid() and wep[func] then
+		wep[func](wep, a, b, c)
+	end
+end
+
+function meta:StatusWeaponHook4(func, a, b, c, d)
+	for _, ent in pairs(ents.FindByClass("status*")) do
+		if ent:GetOwner() == self then
+			if ent[func] then
+				ent[func](ent, a, b, c, d)
+			end
+		end
+	end
+
+	local wep = self:GetActiveWeapon()
+	if wep:IsValid() and wep[func] then
+		wep[func](wep, a, b, c, d)
+	end
 end

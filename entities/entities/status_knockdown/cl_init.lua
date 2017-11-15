@@ -14,7 +14,7 @@ function ENT:Initialize()
 		end
 		owner:SoftFreeze(true)
 
-		owner:StatusWeaponHook("PlayerKnockedDown", self, false, self:GetEndTime())
+		owner:StatusWeaponHook3("PlayerKnockedDown", self, false, self:GetEndTime())
 		owner:CallMonsterFunction("PlayerKnockedDown", self, false, self:GetEndTime())
 	end
 end

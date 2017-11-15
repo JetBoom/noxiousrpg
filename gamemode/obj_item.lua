@@ -2,6 +2,8 @@ if SERVER then
 	util.AddNetworkString("noxrp_itemupdate")
 end
 
+local rawget = rawget
+
 Item = {}
 Container = Item
 
@@ -15,16 +17,31 @@ function meta:__tostring()
 	return "Item ["..self.ID.."]["..self:GetDataName().." "..self:GetAmount().."]"
 end
 
+-- Two items are equal if and only if they share the same unique ID.
 function meta:__eq(other)
 	return other ~= nil and Item.IsItem(other) and other.ID == self.ID
 end
 
--- If we index a nil key, return value of the prototype
+-- If we index something, first try to get the item value
+-- Then try the meta table value (from meta functions)
+-- Then finally try the item data table (functions and default values from scripts)
+-- This allows us to use dynamic prototyping
 function meta:__index(key)
-	return self:GetItemData()[key]
+	local raw = rawget(self, key)
+	if raw ~= nil then
+		return raw
+	end
+
+	return meta[key] or GetItemData(rawget(self, "_D"))[key]
+end
+
+-- Fetch something from the item prototype, ignoring the current instance and meta table.
+function meta:DefaultValue(key)
+	return GetItemData(rawget(self, "_D"))[key]
 end
 
 -- This is for the Serialize function. It's not a real metamethod.
+-- Since the first argument of Item is a data table, this works well for us.
 function meta:_serialize()
 	return "Item("..Serialize(self, true)..")"
 end
@@ -155,12 +172,16 @@ end
 
 -- Returns the number of item objects we can hold. nil is infinite, which is a bad idea. Remember, this is an OBJECT count.
 function meta:GetCapacity()
-	return self.GetCapacity and self:GetCapacity() or self.ItemCapacity
+	-- HACK
+	return 100
+	-- return self.GetCapacity and self:GetCapacity() or self.ItemCapacity
 end
 
 -- Returns the maximum amount of mass we can hold. nil is infinite.
 function meta:GetMassCapacity()
-	return self.GetMassCapacity and self:GetMassCapacity() or self.MassCapacity
+	-- HACK
+	return nil
+	-- return self.GetMassCapacity and self:GetMassCapacity() or self.MassCapacity
 end
 
 -- Adds an item to us.
@@ -583,7 +604,7 @@ local function DoOnContentsChanged(root, item)
 end
 function meta:CallParentContentsChanged()
 	local root = self:GetRoot()
-	if root and root:IsItem() and root:IsContainer() and root.OnContentsChanged then
+	if root and Item.IsItem(root) and root:IsContainer() and root.OnContentsChanged then
 		timer.Simple(0, function() DoOnContentsChanged(root, self) end)
 	end
 end
@@ -666,7 +687,7 @@ end
 
 -- Returns our itemdata. This is what you get from the scripts in the items folder.
 function meta:GetItemData()
-	return GetItemData(self._D)
+	return GetItemData(rawget(self, "_D"))
 end
 
 -- Destroys this item. If it's a container, destroys any children.
@@ -718,48 +739,53 @@ function meta:SetParent(parent)
 	local curparent = self:GetParent()
 	if curparent == parent then return true end -- Skip it all if the new parent is the same as our current.
 
-	if not parent or parent:IsContainer() then -- Either the parent is nothing or a container.
-		local oldentity = self:GetRootEntity()
+	if parent and not parent:IsContainer() then return false end -- Either the parent is nothing or a container.
 
-		if parent then
-			self.Parent = parent.ID
-			self:RemoveEntity()
-		else
-			self.Parent = nil
-		end
+	local oldentity = self:GetRootEntity()
 
-		if curparent then
-			curparent.Container[self.ID] = nil
-			curparent:RadiusSync()
-		end
-
-		if parent then
-			parent.Container[self.ID] = self
-			parent:RadiusSync()
-		end
-
-		if curparent ~= parent then
-			if curparent and curparent.OnContentsChanged then
-				curparent:OnContentsChanged(self)
-			end
-
-			if parent and parent.OnContentsChanged then
-				parent:OnContentsChanged(self)
-			end
-
-			if self.OnParentChanged then
-				self:OnParentChanged(parent, curparent)
-			end
-		end
-
-		if self:GetRootEntity() ~= oldentity then
-			self:OnRootEntityChanged()
-		end
-
-		return true
+	if parent then
+		self.Parent = parent.ID
+		self:RemoveEntity()
+	else
+		self.Parent = nil
 	end
 
-	return false
+	if curparent then
+		curparent.Container[self.ID] = nil
+		curparent:RadiusSync()
+	end
+
+	if parent then
+		parent.Container[self.ID] = self
+
+		-- Might be our first time being in a container. Randomize the display position if so.
+		if not self.X then
+			self.X = math.random(0, 400)
+			self.Y = math.random(0, 400)
+		end
+
+		parent:RadiusSync()
+	end
+
+	if curparent ~= parent then
+		if curparent and curparent.OnContentsChanged then
+			curparent:OnContentsChanged(self)
+		end
+
+		if parent and parent.OnContentsChanged then
+			parent:OnContentsChanged(self)
+		end
+
+		if self.OnParentChanged then
+			self:OnParentChanged(parent, curparent)
+		end
+	end
+
+	if self:GetRootEntity() ~= oldentity then
+		self:OnRootEntityChanged()
+	end
+
+	return true
 end
 
 -- Returns the Item object that holds us, if any.
@@ -824,7 +850,6 @@ function Item:new(data, dataname, amount)
 		end]]
 	else
 		item = {}
-		setmetatable(item, meta)
 	end
 
 	if data then
@@ -836,16 +861,24 @@ function Item:new(data, dataname, amount)
 	bIsNew = item._C == nil
 
 	item.ID = item.ID or GetUID()
-	item.DataName = item.DataName or dataname or "rock"
+	item._D = item._D or dataname or "__base"
 
-	local itemdata = GetItemData(item.DataName)
-	if not itemdata then return end
+	setmetatable(item, meta)
+
+	local itemdata = GetItemData(item._D)
+	if not itemdata then
+		if bIsNew then
+			ErrorNoHalt("Missing item prototype for "..item._D..". Changing to generic item.")
+		else
+			ErrorNoHalt("Missing item prototype for "..item._D..". Changing to generic item. Do NOT delete or rename item scripts!!!")
+		end
+
+		item._D = "__base"
+		itemdata = GetItemData("__base")
+	end
 
 	if bIsNew then
 		item._C = os.time()
-
-		item.X = math.random(0, 400)
-		item.Y = math.random(0, 400)
 
 		--[[local copydata = GetItemData(dataname, true)
 		if copydata then

@@ -60,8 +60,8 @@ function GM:CreateHotBar()
 end
 
 function GM:LoadHotBars()
-	if file.Exists("noxiousrpg_hotbars.txt") then
-		self.HotBars = Deserialize(file.Read("noxiousrpg_hotbars.txt"))
+	if file.Exists("noxiousrpg_hotbars.txt", "DATA") then
+		self.HotBars = Deserialize(file.Read("noxiousrpg_hotbars.txt", "DATA"))
 	end
 end
 

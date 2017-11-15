@@ -447,7 +447,7 @@ function meta:UpdateMana()
 	umsg.End()
 end
 
-meta.OldSetMaxHealth = _R["Entity"].SetMaxHealth
+meta.OldSetMaxHealth = FindMetaTable("Entity").SetMaxHealth
 function meta:SetMaxHealth(num)
 	num = math.ceil(num)
 	self:SetDTInt(3, num)

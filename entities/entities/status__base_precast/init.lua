@@ -20,7 +20,7 @@ function ENT:PlayerSet(pPlayer, bExists)
 	pPlayer.Precast = self
 
 	stat.Start(self.SpellData.CastTime)
-		pPlayer:StatusWeaponHook("AlterCastTime")
+		pPlayer:StatusWeaponHook0("AlterCastTime")
 	self.FinishCastTime = CurTime() + stat.End()
 
 	pPlayer:ResetJumpPower()

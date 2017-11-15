@@ -50,7 +50,7 @@ function BaseSpellOnFail(self, pl)
 end
 BaseSpellOnInterrupt = BaseSpellOnFail
 
-for _, filename in pairs(file.FindInLua("noxiousrpg/gamemode/spells/*.lua")) do
+for _, filename in pairs(file.Find("noxiousrpg/gamemode/spells/*.lua", "LUA")) do
 	SPELL = {}
 
 	local spellname = string.sub(filename, 1, -5)

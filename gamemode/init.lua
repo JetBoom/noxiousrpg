@@ -35,6 +35,7 @@ AddCSLuaFile("sh_flora.lua")
 --AddCSLuaFile("sh_playerrigs.lua")
 AddCSLuaFile("sh_convo.lua")
 AddCSLuaFile("cl_convo.lua")
+AddCSLuaFile("sh_monsters.lua")
 
 AddCSLuaFile("cl_animeditor.lua")
 
@@ -46,6 +47,8 @@ AddCSLuaFile("vgui/photbar.lua")
 AddCSLuaFile("vgui/progressbar.lua")
 AddCSLuaFile("vgui/dvitals.lua")
 AddCSLuaFile("vgui/pitem.lua")
+
+AddCSLuaFile("sh_hack.lua")
 
 GM.MapEditorPrefix = "noxiousrpg"
 
@@ -62,7 +65,7 @@ include("sv_convo.lua")
 include("sv_talk.lua")
 include("sv_alchemy.lua")
 
-if file.Exists("gamemodes/noxiousrpg/gamemode/maps/"..game.GetMap()..".lua", true) then
+if file.Exists("gamemodes/noxiousrpg/gamemode/maps/"..game.GetMap()..".lua", "GAME") then
 	MsgN("Executing map profile...")
 	include("maps/"..game.GetMap()..".lua")
 	MsgN("Done.")
@@ -321,10 +324,10 @@ function GM:ProjectileCollide(ent, data)
 end
 
 function GM:LoadWorld()
-	if file.Exists("noxiousrpg_world_"..game.GetMap()..".txt") then
+	if file.Exists("noxiousrpg_world_"..game.GetMap()..".txt", "DATA") then
 		PrintMessage(HUD_PRINTTALK, "[world load]")
 
-		local stuff = Deserialize(file.Read("noxiousrpg_world_"..game.GetMap()..".txt"))
+		local stuff = Deserialize(file.Read("noxiousrpg_world_"..game.GetMap()..".txt", "DATA"))
 
 		if stuff.Entities then
 			timer.Create("LoadEntities", WORLDSAVE_ENTITYLOADRATE, 0, LoadEntitiesPCall, stuff)
@@ -373,6 +376,7 @@ Material = Material or function() end
 Color = Color or function() end
 
 function GM:AddResources()
+	--[[ MISSING
 	resource.AddFile("resource/fonts/knigqst.ttf")
 
 	resource.AddFile("materials/refract_ring.vmt")
@@ -398,40 +402,41 @@ function GM:AddResources()
 	resource.AddFile("materials/noxctf/sprite_bloodspray8.vmt")
 	resource.AddFile("materials/noxctf/spellselection.vmt")
 
-	--[[for _, filename in pairs(file.Find("materials/spellicons/*.vmt", true)) do
+	for _, filename in pairs(file.Find("materials/spellicons/*.vmt", true)) do
 		resource.AddFile("materials/spellicons/"..filename)
 	end]]
 
-	for _, filename in pairs(file.Find("sound/rpgsounds/*.wav", true)) do
-		resource.AddFile("sound/rpgsounds/"..filename)
+	--[[
+	for _, filename in pairs(file.Find("gamemodes/noxiousrpg/content/sound/rpgsounds/*.wav", "GAME")) do
+		resource.AddFile("gamemodes/noxiousrpg/content/sound/rpgsounds/"..filename)
 	end
 
-	for _, filename in pairs(file.Find("sound/rpgsounds/*.mp3", true)) do
-		resource.AddFile("sound/rpgsounds/"..filename)
+	for _, filename in pairs(file.Find("gamemodes/noxiousrpg/content/sound/rpgsounds/*.mp3", "GAME")) do
+		resource.AddFile("gamemodes/noxiousrpg/content/sound/rpgsounds/"..filename)
 	end
 
-	for _, filename in pairs(file.Find("sound/nox/*.wav", true)) do
-		resource.AddFile("sound/nox/"..filename)
+	for _, filename in pairs(file.Find("gamemodes/noxiousrpg/content/sound/nox/*.wav", "GAME")) do
+		resource.AddFile("gamemodes/noxiousrpg/content/sound/nox/"..filename)
 	end
 
-	for _, filename in pairs(file.Find("sound/nox/*.mp3", true)) do
-		resource.AddFile("sound/nox/"..filename)
+	for _, filename in pairs(file.Find("gamemodes/noxiousrpg/content/sound/nox/*.mp3", "GAME")) do
+		resource.AddFile("gamemodes/noxiousrpg/content/sound/nox/"..filename)
 	end
 
-	for _, filename in pairs(file.Find("materials/mixerman3d/weapons/*.*", true)) do
-		resource.AddFile("materials/mixerman3d/weapons/"..filename)
+	for _, filename in pairs(file.Find("gamemodes/noxiousrpg/content/materials/mixerman3d/weapons/*.*", "GAME")) do
+		resource.AddFile("gamemodes/noxiousrpg/content/materials/mixerman3d/weapons/"..filename)
 	end
 
-	for _, filename in pairs(file.Find("models/mixerman3d/weapons/*.mdl", true)) do
-		resource.AddFile("models/mixerman3d/weapons/"..filename)
+	for _, filename in pairs(file.Find("gamemodes/noxiousrpg/content/models/mixerman3d/weapons/*.mdl", "GAME")) do
+		resource.AddFile("gamemodes/noxiousrpg/content/models/mixerman3d/weapons/"..filename)
 	end
 
-	for _, filename in pairs(file.Find("models/peanut/*.mdl", true)) do
-		resource.AddFile("models/peanut/"..filename)
+	for _, filename in pairs(file.Find("gamemodes/noxiousrpg/content/models/peanut/*.mdl", "GAME")) do
+		resource.AddFile("gamemodes/noxiousrpg/content/models/peanut/"..filename)
 	end
 
-	for _, filename in pairs(file.Find("materials/peanut/*.*", true)) do
-		resource.AddFile("materials/peanut/"..filename)
+	for _, filename in pairs(file.Find("gamemodes/noxiousrpg/content/materials/peanut/*.*", "GAME")) do
+		resource.AddFile("gamemodes/noxiousrpg/content/materials/peanut/"..filename)
 	end
 
 	resource.AddFile("models/nox_sword_short_v001.mdl")
@@ -462,6 +467,7 @@ function GM:AddResources()
 	resource.AddFile("particles/particles_rpg_0001.txt")
 
 	resource.AddFile("particles/voidspiral.pcf")
+	]]
 end
 
 function GM:Initialize()
@@ -474,7 +480,6 @@ function GM:Initialize()
 
 	gamemode.Call("AddResources")
 	gamemode.Call("LoadGuilds")
-	gamemode.Call("ParseParticleManifests")
 	gamemode.Call("InitializeSoundSets")
 
 	timer.Create("WorldSave", WORLDSAVE_INTERVAL, 0, gamemode.Call, "SaveWorld")
@@ -504,7 +509,7 @@ end
 
 function GM:CreateDummyEntities()
 	local vVec0 = Vector(0, 0, 0)
-	for _, name in pairs(file.Find("gamemodes/noxiousrpg/entities/entities/dummy_*", true)) do
+	for _, name in pairs(file.Find("gamemodes/noxiousrpg/entities/entities/dummy_*", "GAME")) do
 		local ent = ents.Create(name)
 		if ent:IsValid() then
 			ent:SetPos(vVec0)
@@ -807,8 +812,8 @@ function GM:LoadAccount(pl)
 	local net = pl:ConvertNet()
 	if not tonumber(net) then return end
 
-	if file.Exists("rpgaccounts/"..net..".txt") then
-		table.Merge(pl:GetTable(), Deserialize(file.Read("rpgaccounts/"..net..".txt")))
+	if file.Exists("rpgaccounts/"..net..".txt", "DATA") then
+		table.Merge(pl:GetTable(), Deserialize(file.Read("rpgaccounts/"..net..".txt", "DATA")))
 	end
 
 	pl:PrintMessage(HUD_PRINTCONSOLE, "Your character has been loaded.")
@@ -888,7 +893,7 @@ function GM:PlayerInitialSpawnBasedOn(pl, tab, isfirstspawn)
 	if tab.Velocity then
 		pl:SetLocalVelocity(tab.Velocity)
 	end
-	if tab.Health then
+	if tab.Health and type(tab.Health) == 'number' then
 		pl:SetHealth(tab.Health)
 	end
 	--[[if tab.Stamina then

@@ -127,7 +127,7 @@ function meta:CastSpellEnchantments(flags, target, attacker, ...)
 
 		local shouldupdate
 		for i, enchantment in pairs(item.SpellEnchantments) do
-			if enchantment.Spell and enchantment.Flags & flags == flags and (not enchantment.Charges or enchantment.Charges > 0) and SPELLS[enchantment.Spell] and (not enchantment.Chance or math.Rand(0, 100) <= enchantment.Chance) then
+			if enchantment.Spell and bit.band(enchantment.Flags, flags) == flags and (not enchantment.Charges or enchantment.Charges > 0) and SPELLS[enchantment.Spell] and (not enchantment.Chance or math.Rand(0, 100) <= enchantment.Chance) then
 				local tocaston
 				if enchantment.Target then
 					if enchantment.Target == SPELLENCHANT_TARGET_SELF then

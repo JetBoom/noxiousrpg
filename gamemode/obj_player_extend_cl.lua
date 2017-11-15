@@ -133,7 +133,7 @@ end
 function meta:UpdateMana()
 end
 
-meta.OldGetMaxHealth = _R["Entity"].GetMaxHealth
+meta.OldGetMaxHealth = FindMetaTable("Entity").GetMaxHealth
 function meta:GetMaxHealth()
 	return math.max(1, self:GetDTInt(3))
 end

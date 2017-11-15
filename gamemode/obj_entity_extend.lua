@@ -175,3 +175,7 @@ function meta:GetItemAmount(...)
 	return self:GetContainer():GetItemAmountNonStrict(...)
 end
 meta.ItemAmount = meta.GetItemAmount
+
+function meta:IsSubmerged()
+	return self:WaterLevel() == 3
+end

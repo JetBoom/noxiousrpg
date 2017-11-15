@@ -33,11 +33,11 @@ function SWEP:PrimaryAttack()
 	end
 
 	stat.Start(self:GetBaseDrawTime())
-		self.Owner:StatusWeaponHook("AlterDrawTime")
+		self.Owner:StatusWeaponHook0("AlterDrawTime")
 	self:SetDrawEnd(CurTime() + stat.End())
 
 	self:SetState(STATE_BOW_DRAWING)
-	
+
 	self:NextThink(CurTime())
 
 	self:EmitSound("nox/bow_takearrow0"..math.random(1, 4)..".wav")
