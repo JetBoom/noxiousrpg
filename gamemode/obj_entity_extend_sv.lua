@@ -14,6 +14,7 @@ function meta:ChatBubble(text, radius, filter)
 		net.WriteString(text)
 	net.Send(filter or self:GetChatBubbleFilter(radius))
 end
+util.AddNetworkString("chatbubble")
 
 function meta:GetChatBubbleFilter(radius)
 	radius = radius or CHATBUBBLE_RADIUS

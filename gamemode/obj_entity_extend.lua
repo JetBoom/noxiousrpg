@@ -179,3 +179,12 @@ meta.ItemAmount = meta.GetItemAmount
 function meta:IsSubmerged()
 	return self:WaterLevel() == 3
 end
+
+function meta:GetAttachmentByName(name)
+	local attachments = self:GetAttachments()
+	if not attachments then return nil end
+
+	for attachmentIndex, attachmentName in ipairs(attachments) do
+		if attachmentName == name then return self:GetAttachment(attachmentIndex) end
+	end
+end

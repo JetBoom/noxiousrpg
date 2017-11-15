@@ -27,7 +27,7 @@ local TEXT_ALIGN_LEFT = TEXT_ALIGN_LEFT
 local TEXT_ALIGN_RIGHT = TEXT_ALIGN_RIGHT
 
 if not MySelf then MySelf = NULL end
-hook.Add("InistPostEntity", "GetLocal", function()
+hook.Add("InitPostEntity", "GetLocal", function()
 	hook.Remove("InitPostEntity", "GetLocal")
 	MySelf = LocalPlayer()
 	gamemode.Call("GotLocalPlayer", MySelf)
@@ -252,8 +252,6 @@ function GM:ItemReceived(item)
 end
 
 function GM:_ItemReceived(item)
-	VERBOSE(item, item.ID, item:GetEntity(), item:GetRootEntity())
-
 	-- If this item is a container and has an owner, try to attach it to a player.
 	local owneruid = item.Owner
 	if owneruid then
@@ -371,7 +369,7 @@ function GM:CalcView(pl, origin, angles, fov, znear, zfar)
 			origin = pl:GetCameraPos(origin, angles)
 
 			if not pl.ThirdPerson then
-				local attach = pl:GetNamedAttachment("eyes")
+				local attach = pl:GetAttachmentByName("eyes")
 				if attach then
 					angles.roll = angles.roll + math.Clamp(attach.Ang.roll * 0.2, -25, 25)
 				end
@@ -583,7 +581,7 @@ end
 
 function EyeTrace(length, mask)
 	local pos = GetCameraPos()
-	return util.TraceLine({start = pos, endpos = pos + (length or MOUSE_TRACEDISTANCE) * MySelf:GetCursorAimVector(), mask = mask or MASK_SOLID, filter = MySelf})
+	return util.TraceLine({start = pos, endpos = pos + (length or MOUSE_TRACEDISTANCE) * MySelf:GetAimVector(), mask = mask or MASK_SOLID, filter = MySelf})
 end
 
 usermessage.Hook("PlayerSpawn", function(um)

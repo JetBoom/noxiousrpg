@@ -18,6 +18,6 @@ if SERVER then
 	
 		net.Start(type)
 			net.WriteString(str)
-		net.Send()
+		net.Send(self)
 	end
 end
