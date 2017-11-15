@@ -61,7 +61,7 @@ function ENT:Draw()
 
 	self:SetColor(255, 255, 255, math.max(1, a))
 	if self.ModelScale then
-		self:SetModelScale(self.ModelScale)
+		self:SetModelScale(self.ModelScale, 0)
 	end
 	self:DrawModel()
 end

@@ -21,7 +21,7 @@ CLASS.SWEP = "weapon_chargerbug"
 
 CLASS.Scale = 0.5
 CLASS.RScale = 1 / CLASS.Scale
-CLASS.ModelScale = Vector(CLASS.Scale, CLASS.Scale, CLASS.Scale)
+CLASS.ModelScale = CLASS.Scale
 
 CLASS.NoFallDamage = true
 
@@ -43,7 +43,7 @@ CLASS.TalkSound = Sound("NPC_Antlion.Idle")
 
 if CLIENT then
 	function CLASS:Think(pl)
-		pl:SetModelScale(self.ModelScale)
+		pl:SetModelScale(self.ModelScale, 0)
 	end
 end
 

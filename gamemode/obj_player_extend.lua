@@ -279,7 +279,7 @@ end
 local deftab = {}
 function meta:ResetData(tab)
 	tab = tab or deftab
-
+	
 	self:SetHull(tab.HullMin or PLAYER_HULL_MIN, tab.HullMax or PLAYER_HULL_MAX)
 	self:SetHullDuck(tab.HullDuckMin or PLAYER_HULL_DUCKED_MIN, tab.HullDuckMax or PLAYER_HULL_DUCKED_MAX)
 	self:SetCollisionBounds(tab.HullMin or PLAYER_HULL_MIN, tab.HullMax or PLAYER_HULL_MAX)
@@ -315,7 +315,7 @@ function meta:ResetData(tab)
 	end
 
 	if CLIENT then
-		self:SetModelScale(tab.ModelScale or PLAYER_MODELSCALE)
+		self:SetModelScale(tab.ModelScale or PLAYER_MODELSCALE, 0)
 	end
 end
 

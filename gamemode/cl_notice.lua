@@ -38,7 +38,7 @@ function GM:AddNotify(str, color, length, font, noantispam)
 	tab.color = table.Copy(color)
 	tab.font = font or "rpg_notice"
 
-	chat.OldAddText(tab.color, str)
+	chat.AddText(tab.color, str)
 
 	if 12 < #HUDNotes then
 		table.remove(HUDNotes, #HUDNotes)

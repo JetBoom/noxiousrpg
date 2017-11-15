@@ -251,7 +251,7 @@ end
 function GM:ItemReceived(item)
 end
 
-function GM:_ItemReceived(item)
+function GM:_ItemReceived(item)	
 	-- If this item is a container and has an owner, try to attach it to a player.
 	local owneruid = item.Owner
 	if owneruid then
@@ -526,7 +526,7 @@ function GM:PaintTargetID()
 		elseif eyeent:IsCharacter() then
 			self:PaintTargetIDCharacter(eyeent, eyetrace)
 		else
-			local itemdata = eyeent:GetItem() or eyeent:GetDefaultItemData()
+			local itemdata = eyeent:GetItem() -- or eyeent:GetDefaultItemData()
 			if itemdata then
 				draw.WordBox(util.NameByAmount(itemdata.Name, eyeent:GetAmount()), "rpg_targetid_item", MouseX(), MouseY() + 16, color_white, color_black_alpha90, TEXT_ALIGN_CENTER)
 			end

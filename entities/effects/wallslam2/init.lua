@@ -62,7 +62,7 @@ function EFFECT:Init(data)
 		rock:Spawn()
 
 		local scale = math.Rand(1, 5)
-		rock:SetModelScale(Vector(scale, scale, scale))
+		rock:SetModelScale(scale, 0)
 		rock:PhysicsInitBox(rock:OBBMins(), rock:OBBMaxs())  
 		rock:SetCollisionBounds(rock:OBBMins(), rock:OBBMaxs())  
 		rock:SetMoveType(MOVETYPE_VPHYSICS)
