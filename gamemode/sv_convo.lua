@@ -66,7 +66,13 @@ function convo.Update(pl)
 			local text = convo.GetText(pl, conv)
 			local ent = conv.Entity
 			local valident = ValidEntity(ent)
-			pl:SendLongString("convo_upd", Serialize({Entity = valident and ent:EntIndex(), Text = text, Choices = convo.GetChoices(pl, conv)}))
+
+			net.Start("rpg_convo_upd")
+				net.WriteEntity(valident or NULL)
+				net.WriteString(text)
+				net.WriteTable(convo.GetChoices(pl, conv))
+			net.Send(pl)
+
 			if valident then
 				if string.sub(text, 1, 1) == ">" then
 					pl:Talk(text, pl, CONVERSATION_RADIUS)
