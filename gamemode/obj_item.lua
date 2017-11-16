@@ -828,7 +828,8 @@ if CLIENT then
 	meta.ItemPanel = meta.GetItemPanel
 
 	net.Receive("noxrp_itemupdate", function(len)
-		gamemode.Call("ItemReceived", Deserialize(net.ReadString(), ITEM_DESERIALIZE_ENV))
+		local item = Deserialize("SRL={" .. net.ReadString() .. "}", ITEM_DESERIALIZE_ENV)
+		gamemode.Call("ItemReceived", item[1] or {})
 	end)
 end
 
