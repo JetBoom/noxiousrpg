@@ -162,8 +162,6 @@ function GM:SaveWorld()
 
 	PrintMessage(HUD_PRINTTALK, "[world save]")
 
-	NDB.GlobalSave()
-
 	local curtime = CurTime()
 
 	local tosave = {}
@@ -533,7 +531,6 @@ function GM:PlayerSelectSpawn(pl)
 end
 
 function GM:Think()
-	if true then return end
 	local fCurTime = CurTime()
 	local fNextTick = fCurTime + 1
 
