@@ -11,7 +11,7 @@ end
 
 function NDB.AddContentsCallback(type, callback)
 	if DEBUG then error("NDB:AddContentsCallback called") end
-	net.Receive(tostring(type), callback)
+	net.Receive(tostring(type), callback(net.ReadString()))
 end
 
 local player = FindMetaTable("Player")
