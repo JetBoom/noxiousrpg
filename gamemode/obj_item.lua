@@ -7,6 +7,8 @@ local rawget = rawget
 Item = {}
 Container = Item
 
+ITEM_DESERIALIZE_ENV = {Vector = Vector, Angle = Angle, Item = Item}
+
 local meta = {}
 
 function Item.IsItem(object)
@@ -826,7 +828,7 @@ if CLIENT then
 	meta.ItemPanel = meta.GetItemPanel
 
 	net.Receive("noxrp_itemupdate", function(len)
-		gamemode.Call("ItemReceived", Deserialize(net.ReadString()))
+		gamemode.Call("ItemReceived", Deserialize(net.ReadString(), ITEM_DESERIALIZE_ENV))
 	end)
 end
 

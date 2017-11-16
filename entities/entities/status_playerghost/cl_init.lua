@@ -1,6 +1,6 @@
 include("shared.lua")
 
-function ENT:Initialize()
+function ENT:OnInitialize()
 	local owner = self:GetOwner()
 	owner.m_PlayerGhost = self
 

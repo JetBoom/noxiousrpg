@@ -13,7 +13,7 @@ end
 function WaitMakepContainer(uid, maxdelay)
 	maxdelay = maxdelay or 5
 
-	timer.Create("waitingforcontainer"..uid, 0, 0, Waiting, uid, CurTime() + maxdelay)
+	timer.Create("waitingforcontainer"..uid, 0, 0, function() Waiting(uid, CurTime() + maxdelay) end)
 end
 
 function MakepContainer(container)

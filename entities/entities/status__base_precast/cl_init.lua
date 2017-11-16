@@ -7,8 +7,7 @@ function ENT:GetCastSoundPitch()
 	return self.BaseSoundPitch + self:GetCastPercent() * self.SoundPitchOffset + math.sin(RealTime())
 end
 
-function ENT:Initialize()
-	self:DrawShadow(false)
+function ENT:OnInitialize()
 	self:SetRenderBoundsNumber(92)
 	self.Created = CurTime()
 	self:GetOwner().Precast = self

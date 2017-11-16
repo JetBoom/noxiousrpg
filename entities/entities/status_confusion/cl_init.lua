@@ -1,15 +1,12 @@
 include("shared.lua")
 
-function ENT:Initialize()
-	self:DrawShadow(false)
+function ENT:OnInitialize()
 	self:SetRenderBoundsNumber(72)
 
 	self.Emitter = ParticleEmitter(self:GetPos())
 	self.Emitter:SetNearClip(28, 32)
 
 	self.Seed = math.Rand(0, 360)
-
-	self.BaseClass.Initialize(self)
 end
 
 function ENT:Think()

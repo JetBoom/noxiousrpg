@@ -1,7 +1,6 @@
 include("shared.lua")
 
-function ENT:Initialize()
-	self:DrawShadow(false)
+function ENT:OnInitialize()
 	self:SetRenderBoundsNumber(72)
 	self.Seed = math.Rand(0, 10)
 end

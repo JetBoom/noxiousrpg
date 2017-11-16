@@ -5,8 +5,7 @@ ENT.GlowColor1 = Color(255, 255, 255)
 ENT.GlowMaterial2 = ENT.GlowMaterial1
 ENT.GlowColor2 = ENT.GlowColor1
 
-function ENT:Initialize()
-	self:DrawShadow(false)
+function ENT:OnInitialize()
 	self:SetRenderBoundsNumber(72)
 	self.Seed = math.Rand(0, 10)
 	self.YawSeed = math.Rand(0, 360)

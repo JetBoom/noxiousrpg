@@ -1,7 +1,6 @@
 include("shared.lua")
 
-function ENT:Initialize()
-	self:DrawShadow(false)
+function ENT:OnInitialize()
 	self:SetRenderBoundsNumber(72)
 
 	self.AmbientSound = CreateSound(self, "ambient/machines/combine_shield_touch_loop1.wav")

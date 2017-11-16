@@ -3,7 +3,7 @@ AddCSLuaFile("shared.lua")
 ENT.Type = "anim"
 ENT.Base = "status__base"
 
-function ENT:Initialize()
+function ENT:OnInitialize()
 	self:SetSolid(SOLID_NONE)
 	self:SetMoveType(MOVETYPE_NONE)
 	self:AddEffects(bit.bor(EF_BONEMERGE, EF_PARENT_ANIMATES))

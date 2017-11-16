@@ -4,6 +4,11 @@
 local meta = FindMetaTable("Player")
 if not meta then return end
 
+function meta:Thought(str)
+	self:PrintMessage(HUD_PRINTTALK, str)
+	self:PrintMessage(HUD_PRINTCONSOLE, str)
+end
+
 function meta:Think()
 	self:CallMonsterFunction("Think")
 end
@@ -279,7 +284,7 @@ end
 local deftab = {}
 function meta:ResetData(tab)
 	tab = tab or deftab
-	
+
 	self:SetHull(tab.HullMin or PLAYER_HULL_MIN, tab.HullMax or PLAYER_HULL_MAX)
 	self:SetHullDuck(tab.HullDuckMin or PLAYER_HULL_DUCKED_MIN, tab.HullDuckMax or PLAYER_HULL_DUCKED_MAX)
 	self:SetCollisionBounds(tab.HullMin or PLAYER_HULL_MIN, tab.HullMax or PLAYER_HULL_MAX)
@@ -793,8 +798,8 @@ function meta:GetSpellTarget()
 	return status and status:IsValid() and status:GetTarget():IsValid() and status:GetTarget() or self
 end
 
-function meta:ConvertNet()
-	return self:SteamID64()
+function meta:RPGAccountFile()
+	return string.format("rpgaccounts/%s/%s.txt", self:SteamID64():sub(-2), self:SteamID64())
 end
 
 function meta:AddFrozenPhysicsObject(ent, phys)
@@ -1004,7 +1009,7 @@ function meta:TemporaryNoCollide(force)
 			self:SetCollisionGroup(COLLISION_GROUP_DEBRIS_TRIGGER)
 
 			local timername = "TemporaryNoCollide"..self:UniqueID()
-			timer.Create(timername, 0, 0, nocollidetimer, self, timername)
+			timer.Create(timername, 0, 0, function() nocollidetimer(self, timername) end)
 
 			return
 		end

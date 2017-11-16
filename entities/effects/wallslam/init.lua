@@ -33,7 +33,7 @@ function EFFECT:Init(data)
 		ent:SetCollisionBounds(vNBounds, vBounds)
 		ent:GetPhysicsObject():SetMaterial("rock")
 		ent:GetPhysicsObject():ApplyForceOffset(ent:GetPos() + VectorRand() * 5, dir * math.Rand(300, 800))
-		timer.Simple(math.Rand(4, 6), ent.Remove, ent)
+		timer.Simple(math.Rand(4, 6), function() ent:Remove() end)
 	end
 
 	local ang = normal:Angle()

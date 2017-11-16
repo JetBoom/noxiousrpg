@@ -34,7 +34,7 @@ function ENT:DrawTranslucent()
 	end
 end
 
-function ENT:Initialize()
+function ENT:OnInitialize()
 	self.Emitter = ParticleEmitter(self:GetPos())
 	self.Emitter:SetNearClip(24, 32)
 

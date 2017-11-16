@@ -1,6 +1,7 @@
 AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
 
+AddCSLuaFile("cl_boneanimlib.lua")
 AddCSLuaFile("cl_postprocess.lua")
 AddCSLuaFile("cl_scoreboard.lua")
 AddCSLuaFile("cl_talk.lua")
@@ -327,10 +328,10 @@ function GM:LoadWorld()
 	if file.Exists("noxiousrpg_world_"..game.GetMap()..".txt", "DATA") then
 		PrintMessage(HUD_PRINTTALK, "[world load]")
 
-		local stuff = Deserialize(file.Read("noxiousrpg_world_"..game.GetMap()..".txt", "DATA"))
+		local stuff = Deserialize(file.Read("noxiousrpg_world_"..game.GetMap()..".txt", "DATA"), ITEM_DESERIALIZE_ENV)
 
 		if stuff.Entities then
-			timer.Create("LoadEntities", WORLDSAVE_ENTITYLOADRATE, 0, LoadEntitiesPCall, stuff)
+			timer.Create("LoadEntities", WORLDSAVE_ENTITYLOADRATE, 0, function() LoadEntitiesPCall(stuff) end)
 			self.WorldLoading = true
 		end
 
@@ -473,16 +474,20 @@ end
 function GM:Initialize()
 	timer.Remove("HostnameThink")
 
-	RunConsoleCommand("mp_flashlight", 0)
 	RunConsoleCommand("sv_gravity", 600)
 
 	VOTEMAPLOCKED = true
+
+	file.CreateDir("rpgaccounts")
+	for i=0, 99 do
+		file.CreateDir(string.format("rpgaccounts/%02d", i))
+	end
 
 	gamemode.Call("AddResources")
 	gamemode.Call("LoadGuilds")
 	gamemode.Call("InitializeSoundSets")
 
-	timer.Create("WorldSave", WORLDSAVE_INTERVAL, 0, gamemode.Call, "SaveWorld")
+	timer.Create("WorldSave", WORLDSAVE_INTERVAL, 0, function() gamemode.Call("SaveWorld") end)
 end
 
 function GM:InitPostEntity()
@@ -528,6 +533,7 @@ function GM:PlayerSelectSpawn(pl)
 end
 
 function GM:Think()
+	if true then return end
 	local fCurTime = CurTime()
 	local fNextTick = fCurTime + 1
 
@@ -751,7 +757,7 @@ end
 
 function GM:PlayerReady(pl)
 	if pl:IsValid() then
-		timer.Simple(1, gamemode.Call, "DelayFeed", pl)
+		timer.Simple(1, function() gamemode.Call("DelayFeed", pl) end)
 	end
 end
 
@@ -795,13 +801,13 @@ function GM:PlayerDisconnected(pl)
 end
 
 function GM:SaveAccount(pl)
-	if not pl.Money or not pl:GetContainer() then return end
+	if not pl:GetContainer() then return end -- Probably didnt load if this isnt created
 
 	local savetab = {}
 
 	pl:InsertRPGData(savetab)
 
-	file.Write("rpgaccounts/"..pl:ConvertNet()..".txt", Serialize(savetab))
+	file.Write(pl:RPGAccountFile(), Serialize(savetab))
 
 	pl:PrintMessage(HUD_PRINTCONSOLE, "Your character has been saved.")
 end
@@ -809,11 +815,10 @@ end
 function GM:LoadAccount(pl)
 	if not IsValid(pl) then return end
 
-	local net = pl:ConvertNet()
-	if not tonumber(net) then return end
+	local file_name = pl:RPGAccountFile()
 
-	if file.Exists("rpgaccounts/"..net..".txt", "DATA") then
-		table.Merge(pl:GetTable(), Deserialize(file.Read("rpgaccounts/"..net..".txt", "DATA")))
+	if file.Exists(file_name, "DATA") then
+		table.Merge(pl:GetTable(), Deserialize(file.Read(file_name, "DATA"), ITEM_DESERIALIZE_ENV))
 	end
 
 	pl:PrintMessage(HUD_PRINTCONSOLE, "Your character has been loaded.")
@@ -868,7 +873,7 @@ function GM:PlayerInitialSpawnBasedOn(pl, tab, isfirstspawn)
 		pl:SetMonsterClass(tab.MonsterClass or 1)
 		pl:SetGhost(false)
 		if isfirstspawn then
-			timer.Simple(0.1, pl.UpdateMonsterClass, pl)
+			timer.Simple(0.1, function() pl:UpdateMonsterClass() end)
 		end
 	else
 		pl:SetTeam(TEAM_HUMAN)

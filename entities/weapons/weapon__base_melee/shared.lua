@@ -47,7 +47,7 @@ function SWEP:Initialize()
 	self:SetupForWeaponStatus()
 
 	if self.AutoRange and not self.MeleeRange then
-		timer.Simple(0, GetRange, self)
+		timer.Simple(0, function() GetRange(self) end)
 	end
 end
 

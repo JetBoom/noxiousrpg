@@ -6,9 +6,7 @@ include("shared.lua")
 ENT.CastTime = 1
 ENT.PrecastKey = IN_ATTACK
 
-function ENT:Initialize()
-	self:DrawShadow(false)
-
+function ENT:OnInitialize()
 	self:PrecastInitialize()
 end
 

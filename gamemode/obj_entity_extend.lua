@@ -1,6 +1,10 @@
 local meta = FindMetaTable("Entity")
 if not meta then return end
 
+function meta:IsCharacter()
+	return self:IsPlayer() or self:IsNPC()
+end
+
 function meta:GetItemByUIDOrDataName(argument)
 	local itemid = tonumber(argument)
 	return itemid and Items[itemid] or self:GetContainer():GetItemNonStrict(argument)

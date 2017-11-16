@@ -59,7 +59,7 @@ end
 -----------------------------
 local sandbox_env = {Vector = Vector, Angle = Angle}
 
-function Deserialize(sIn)
+function Deserialize(sIn, env)
 	local out = {}
 
 	if #sIn == 0 or string.sub(sIn, -1) ~= "}" then return out end
@@ -73,7 +73,7 @@ function Deserialize(sIn)
 	if type(func) == "string" then
 		print("Deserialization error: "..func)
 	else
-		setfenv(func, sandbox_env)
+		setfenv(func, env or sandbox_env)
 		out = func() or out
 	end
 
@@ -101,7 +101,7 @@ local function MakeTable(tab, done)
 			if sequential then
 				key = ""
 			else
-				if keytype == "number" or keytype == "boolean" then 
+				if keytype == "number" or keytype == "boolean" then
 					key ="["..tostring(key).."]="
 				else
 					key = "["..string.format("%q", tostring(key)).."]="
@@ -116,7 +116,7 @@ local function MakeTable(tab, done)
 					str = str..key.."{"..MakeTable(value, done).."},"
 				end
 			else
-				if valuetype == "string" then 
+				if valuetype == "string" then
 					value = string.format("%q", value)
 				elseif valuetype == "Vector" then
 					value = "Vector("..value.x..","..value.y..","..value.z..")"

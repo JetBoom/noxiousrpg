@@ -9,7 +9,6 @@ function ENT:DrawTranslucent()
 	GenericSprite(owner:LocalToWorld(owner:OBBCenter()))
 end
 
-function ENT:Initialize()
-	self:DrawShadow(false)
+function ENT:OnInitialize()
 	self:SetRenderBoundsNumber(72)
 end

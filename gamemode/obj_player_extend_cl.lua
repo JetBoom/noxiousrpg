@@ -1,6 +1,20 @@
 local meta = FindMetaTable("Player")
 if not meta then return end
 
+function meta:RemoveAllStatus(bSilent, bInstant)
+end
+
+function meta:RemoveStatus(sType, bSilent, bInstant, sExclude)
+end
+
+function meta:GetStatus(sType)
+	local ent = self["status_"..sType]
+	if ent and ent:GetOwner() == self then return ent end
+end
+
+function meta:GiveStatus(sType, fDie)
+end
+
 function meta:CustomGesture(gesture)
 	self:AnimRestartGesture(GESTURE_SLOT_CUSTOM, gesture)
 end

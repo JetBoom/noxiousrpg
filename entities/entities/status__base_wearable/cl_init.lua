@@ -7,8 +7,7 @@ local function refreshfootsteps(pl)
 end
 
 local function empty() end
-function ENT:Initialize()
-	self:DrawShadow(false)
+function ENT:OnInitialize()
 	if not self.Model then
 		self:SetNoDraw(true)
 		self.Draw = empty
@@ -17,11 +16,11 @@ function ENT:Initialize()
 		self:SetRenderBoundsNumber(self.RenderBounds)
 	end
 
-	timer.Simple(0.5, refreshfootsteps, self:GetOwner())
+	timer.Simple(0.5, function() refreshfootsteps(self:GetOwner()) end)
 end
 
 function ENT:OnRemove()
-	timer.Simple(0.5, refreshfootsteps, self:GetOwner())
+	timer.Simple(0.5, function() refreshfootsteps(self:GetOwner()) end)
 end
 
 function ENT:Draw()

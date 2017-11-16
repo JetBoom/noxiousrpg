@@ -63,7 +63,7 @@ concommand.Add("mapeditor_pickup", function(sender, command, arguments)
 	if tr.Entity and tr.Entity:IsValid() then
 		for i, ent in ipairs(GAMEMODE.MapEditorEntities) do
 			if ent == tr.Entity then
-				timer.Create(sender:UniqueID().."mapeditorpickup", 0.25, 0, ME_Pickup, sender, ent, sender:UniqueID())
+				timer.Create(sender:UniqueID().."mapeditorpickup", 0.25, 0, function() ME_Pickup(sender, ent, sender:UniqueID()) end)
 			end
 		end
 	end

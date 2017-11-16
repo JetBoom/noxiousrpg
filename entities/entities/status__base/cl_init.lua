@@ -11,6 +11,8 @@ function ENT:Initialize()
 	if owner:IsValid() then
 		owner[self:GetClass()] = self
 	end
+
+	self:OnInitialize()
 end
 
 function ENT:Think()

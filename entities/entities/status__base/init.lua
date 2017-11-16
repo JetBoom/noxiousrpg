@@ -6,6 +6,8 @@ include("shared.lua")
 function ENT:Initialize()
 	self:DrawShadow(false)
 	self.DieTime = self.DieTime or 0
+
+	self:OnInitialize()
 end
 
 function ENT:SetPlayer(pPlayer, bExists)
@@ -42,6 +44,15 @@ function ENT:KeyValue(key, value)
 		self:SetDie(tonumber(value))
 		return true
 	end
+end
+
+function ENT:PhysicsCollide(data, physobj)
+end
+
+function ENT:Touch(ent)
+end
+
+function ENT:OnRemove()
 end
 
 function ENT:SetDie(fTime)

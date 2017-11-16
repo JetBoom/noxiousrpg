@@ -2,8 +2,7 @@ include("shared.lua")
 
 ENT.RenderBounds = Vector(64, 64, 64)
 
-function ENT:Initialize()
-	self:DrawShadow(false)
+function ENT:OnInitialize()
 	--self:SetModel(self.Model)
 	if self.RenderBounds then
 		--self:SetRenderBoundsNumber(self.RenderBounds)

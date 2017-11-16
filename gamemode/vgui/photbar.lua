@@ -61,7 +61,7 @@ end
 
 function GM:LoadHotBars()
 	if file.Exists("noxiousrpg_hotbars.txt", "DATA") then
-		self.HotBars = Deserialize(file.Read("noxiousrpg_hotbars.txt", "DATA"))
+		self.HotBars = Deserialize(file.Read("noxiousrpg_hotbars.txt", "DATA"), ITEM_DESERIALIZE_ENV)
 	end
 end
 
@@ -162,7 +162,7 @@ function PANEL:Paint()
 end
 
 function PANEL:DoClick()
-	
+
 end
 
 vgui.Register("DHotBarCell", PANEL, "DButton")
