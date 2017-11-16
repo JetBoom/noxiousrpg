@@ -38,7 +38,7 @@ end)
 
 w, h = ScrW(), ScrH()
 
-function BetterScreenScale() 
+function BetterScreenScale()
 	return math.max(ScrH() / 1080, 0.851)
 end
 
@@ -252,7 +252,7 @@ end
 function GM:ItemReceived(item)
 end
 
-function GM:_ItemReceived(item)	
+function GM:_ItemReceived(item)
 	-- If this item is a container and has an owner, try to attach it to a player.
 	local owneruid = item.Owner
 	if owneruid then
@@ -271,9 +271,13 @@ function GM:_ItemReceived(item)
 	end
 end
 
-usermessage.Hook("updskill", function(um)
-	if MySelf:IsValid() then
-		MySelf:SetSkill(um:ReadShort(), um:ReadFloat())
+net.Receive("rpg_skill", function(length)
+	local ent = net.ReadEntity()
+	local skillid = net.ReadUInt(8)
+	local amount = net.ReadFloat()
+
+	if ent:IsValid() then
+		ent:SetSkill(skillid, amount)
 	end
 end)
 
@@ -611,10 +615,15 @@ NDB.AddContentsCallback(LONGSTRING_UPDATEALLZONES, function(contents)
 	end
 end)
 
-NDB.AddContentsCallback(LONGSTRING_UPDATESKILLS, function(contents)
-	for k, v in pairs(Deserialize(contents)) do
-		MySelf:SetSkill(k, v)
+net.Receive("rpg_skills", function(length)
+	local ent = net.ReadEntity()
+
+	if ent:IsValid() then
+		for i=1, #SKILLS do
+			ent:SetSkill(i, net.ReadFloat())
+		end
 	end
+
 	gamemode.Call("OnSkillsReceived")
 end)
 
@@ -637,10 +646,13 @@ end
 effects.Register({Init = function(self, data)
 	local emitter = ParticleEmitter(data:GetOrigin())
 	emitter:SetNearClip(24, 32)
+
 	local particle = emitter:Add("sprites/glow04_noz", data:GetOrigin())
 	particle:SetStartSize(8)
 	particle:SetEndSize(128)
 	particle:SetStartAlpha(255)
 	particle:SetEndAlpha(0)
 	particle:SetDieTime(0.5)
+
+	emitter:Finish()
 end, Think = function(self) return false end, Render = function(self) end}, "genericexplosion")

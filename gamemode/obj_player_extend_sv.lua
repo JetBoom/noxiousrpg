@@ -416,8 +416,22 @@ function meta:SetGuild(id)
 	self:SetTeam(TEAM_HUMAN + id)
 end
 
-function meta:UpdateSkills()
-	self:SendLongString(LONGSTRING_UPDATESKILLS, Serialize(self.Skills))
+function meta:UpdateSkills(rec)
+	net.Start("rpg_skills")
+	net.WriteEntity(self)
+
+	for skillid, amount in ipairs(self.Skills) do
+		net.WriteFloat(amount)
+	end
+
+	net.Send(rec or self)
+end
+
+function meta:UpdateSkill(skillid, rec)
+	net.Start("rpg_skill")
+	net.WriteUInt(skillid, 8)
+	net.WriteFloat(self.Skills[skillid] or 0)
+	net.Send(rec or self)
 end
 
 function meta:SetSkill(skillid, amount, noupdate)
@@ -428,10 +442,7 @@ function meta:SetSkill(skillid, amount, noupdate)
 	end
 
 	if not noupdate then
-		umsg.Start("updskill", self)
-			umsg.Short(skillid)
-			umsg.Float(amount)
-		umsg.End()
+		self:UpdateSkill(skillid)
 	end
 end
 

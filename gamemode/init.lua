@@ -484,8 +484,15 @@ function GM:Initialize()
 	gamemode.Call("AddResources")
 	gamemode.Call("LoadGuilds")
 	gamemode.Call("InitializeSoundSets")
+	gamemode.Call("AddNetworkStrings")
 
 	timer.Create("WorldSave", WORLDSAVE_INTERVAL, 0, function() gamemode.Call("SaveWorld") end)
+end
+
+function GM:AddNetworkStrings()
+	util.AddNetworkString("rpg_skill")
+	util.AddNetworkString("rpg_skills")
+	util.AddNetworkString("rpg_convo_upd")
 end
 
 function GM:InitPostEntity()

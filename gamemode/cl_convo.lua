@@ -13,14 +13,8 @@ local function CloseDoClick(self)
 	RunConsoleCommand("convo_reply", -1)
 	self:GetParent():Remove()
 end
-function convo.CreateConvoFrame(tab)
+function convo.CreateConvoFrame(ent, text, choices)
 	convo.CloseFrame()
-
-	local entindex = tab.Entity
-	local ent = NULL
-	if entindex then
-		ent = Entity(entindex)
-	end
 
 	local wid, hei = math.min(640, ScrW() - 64), 200
 
@@ -42,7 +36,6 @@ function convo.CreateConvoFrame(tab)
 		namebox:MoveAbove(textholder, 8)
 	end
 
-	local text = tostring(tab.Text)
 	local label = vgui.Create("DLabel", textholder)
 	label:SetTall(textholder:GetTall())
 	label:SetContentAlignment(7)
@@ -55,7 +48,7 @@ function convo.CreateConvoFrame(tab)
 	end
 	textholder:AddItem(label)
 
-	if tab.Choices and #tab.Choices > 0 then
+	if choices and #choices > 0 then
 		local choiceswide = 300
 		local choicesholder = vgui.Create("DPanel", window)
 		choicesholder:SetWide(choiceswide)
@@ -64,7 +57,7 @@ function convo.CreateConvoFrame(tab)
 
 		local sendalong = {}
 
-		for i, choice in ipairs(tab.Choices) do
+		for i, choice in ipairs(choices) do
 			local choicetype = choice[1]
 			if choicetype == CHOICETYPE_POINT then
 				local button = EasyButton(choicesholder, choice[3], 0, 4)
@@ -106,6 +99,10 @@ function convo.CloseFrame()
 	ActiveConvoFrame = nil
 end
 
-NDB.AddContentsCallback("convo_upd", function(contents)
-	convo.CreateConvoFrame(Deserialize(contents))
+net.Receive("rpg_convo_upd", function(len)
+	local ent = net.ReadEntity()
+	local text = net.ReadString()
+	local choices = net.ReadTable()
+
+	convo.CreateConvoFrame(ent, text, choices)
 end)
