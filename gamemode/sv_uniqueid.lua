@@ -1,6 +1,9 @@
-local uid = tonumber(file.Read("rpguid.txt", "DATA") or 2049) 
+local FILE_NAME = "rpguid.txt"
+
+local uid = tonumber(file.Read(FILE_NAME, "DATA") or 2049) 
 
 function GetUID()
+	debug.Trace()
 	uid = uid + 1
 	return uid
 end
@@ -8,7 +11,7 @@ end
 local SavedUID = uid
 timer.Create("SaveUID", 10, 0, function()
 	if SavedUID ~= uid then
-		file.Write("uid.txt", uid)
+		file.Write(FILE_NAME, uid)
 		SavedUID = uid
 	end
 end)
