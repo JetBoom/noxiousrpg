@@ -3,7 +3,6 @@ local FILE_NAME = "rpguid.txt"
 local uid = tonumber(file.Read(FILE_NAME, "DATA") or 2049) 
 
 function GetUID()
-	debug.Trace()
 	uid = uid + 1
 	return uid
 end
