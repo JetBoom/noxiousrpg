@@ -1,3 +1,5 @@
+include("cl_boneanimlib.lua")
+
 include("shared.lua")
 include("obj_entity_extend_cl.lua")
 include("obj_player_extend_cl.lua")
@@ -6,7 +8,6 @@ include("cl_postprocess.lua")
 include("cl_scoreboard.lua")
 include("cl_notice.lua")
 include("cl_dermaskin.lua")
-include("cl_boneanimlib.lua")
 include("cl_talk.lua")
 include("cl_floaties.lua")
 include("cl_convo.lua")
