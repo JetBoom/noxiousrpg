@@ -255,7 +255,15 @@ function GM:PlayerHasSkill(pl, skillid)
 end
 
 function GM:ShouldCollide(enta, entb)
-	if enta.ShouldNotCollide and enta:ShouldNotCollide(entb) or entb.ShouldNotCollide and entb:ShouldNotCollide(enta) then return false end
+	local snca = enta.ShouldNotCollide
+	if snca and snca(enta, entb) then return false end
+
+	local sncb = entb.ShouldNotCollide
+	if sncb and sncb(entb, enta) then return false end
+
+	--[[if enta.ShouldNotCollide and enta:ShouldNotCollide(entb) or entb.ShouldNotCollide and entb:ShouldNotCollide(enta) then
+		return false
+	end]]
 
 	return true
 end
@@ -280,13 +288,13 @@ function GM:PlayerStepSoundTime(pl, iType, bWalking)
 end
 
 function GM:GetFallDamage(pl, fallspeed)
-	--[[local damage = pl:StatusWeaponHook("GetFallDamage", fallspeed) or fallspeed * 0.04
+	--[[local damage = pl:StatusWeaponHook1("GetFallDamage", fallspeed) or fallspeed * 0.04
 	return pl:CallMonsterFunction("AlterFallDamage", damage, fallspeed) or damage]]
 	return 0
 end
 
 function GM:OnPlayerHitGround(pl, inwater, hitfloater, speed)
-	if pl:IsGhost() or pl:StatusWeaponHook("OnPlayerHitGround", inwater, hitfloater, speed) or pl:CallMonsterFunction("OnPlayerHitGround", inwater, hitfloater, fallspeed) then return true end
+	if pl:IsGhost() or pl:StatusWeaponHook3("OnPlayerHitGround", inwater, hitfloater, speed) or pl:CallMonsterFunction("OnPlayerHitGround", inwater, hitfloater, fallspeed) then return true end
 
 	if SERVER then
 		local damage = (0.03 * (speed - 550)) ^ 1.5

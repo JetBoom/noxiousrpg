@@ -19,7 +19,7 @@ function ENT:PlayerSet(pPlayer, bExists)
 
 	stat.Start(self.SpellData.CastTime)
 		pPlayer:StatusWeaponHook0("AlterCastTime")
-	self.FinishCastTime = CurTime() + stat.End()
+	self.FinishCastTime = CurTime() + stat.Get()
 
 	pPlayer:ResetJumpPower()
 
