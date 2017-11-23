@@ -6,6 +6,7 @@ ITEM.WearableSlot = WEARABLE_SLOT_WEAPON
 
 if SERVER then
 	function ITEM:OnUse(pl)
+		print('SERVER:ITEM:OnUse', pl)
 		pl:EquipItem(self)
 	end
 

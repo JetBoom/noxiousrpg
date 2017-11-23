@@ -15,11 +15,11 @@ function ENT:DrawTranslucent()
 	local ent = self:GetOwner()
 	if not ent:IsValid() then return end
 
-	local r, g, b, a = ent:GetColor()
+	local color = ent:GetColor()
 	if a < 90 then return end
 
-	self.GlowColor1.a = a
-	self.GlowColor2.a = a * 0.5
+	self.GlowColor1.a = color.a
+	self.GlowColor2.a = color.a * 0.5
 
 	local pos = ent:LocalToWorld(ent:OBBCenter())
 	local radius = ent:BoundingRadius()

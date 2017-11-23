@@ -32,7 +32,7 @@ function ENT:Draw()
 		owner = rag
 	elseif not owner:Alive() then return end
 
-	local r,g,b,a = owner:GetColor()
+	local color = owner:GetColor()
 
 	local pos, ang
 
@@ -58,7 +58,7 @@ function ENT:Draw()
 		self:SetAngles(ang)
 	end
 
-	self:SetColor(255, 255, 255, math.max(1, a))
+	self:SetColor(255, 255, 255, math.max(1, color.a))
 	if self.ModelScale then
 		self:SetModelScale(self.ModelScale, 0)
 	end

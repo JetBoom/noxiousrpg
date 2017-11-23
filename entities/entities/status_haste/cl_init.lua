@@ -4,7 +4,7 @@ function ENT:DrawTranslucent()
 	local owner = self:GetOwner()
 	if not owner:IsValid() then return end
 
-	local r, g, b, a = owner:GetColor()
+	local color = owner:GetColor()
 	if a < 180 then return end
 
 	local skill = self:GetSkillLevel()
@@ -15,7 +15,7 @@ function ENT:DrawTranslucent()
 		local particle = emitter:Add("particle/smokestack", pos)
 		particle:SetVelocity(VectorRand() * 20)
 		particle:SetDieTime(math.Rand(0.7, 0.8))
-		particle:SetStartAlpha(a)
+		particle:SetStartAlpha(color.a)
 		particle:SetEndAlpha(0)
 		particle:SetStartSize(1)
 		particle:SetEndSize(4 + skill * 0.075)

@@ -30,8 +30,8 @@ function ENT:DrawTranslucent()
 
 	ent:SetPoseParameter("head_roll", math.sin(CurTime() * 10) * 10)
 
-	local r, g, b, a = ent:GetColor()
-	colGlow.a = a
+	local color = ent:GetColor()
+	colGlow.a = color.a
 
 	local ang = Angle(0, (self.Seed + CurTime()) * 360, 0)
 	local startpos = ent:GetPos() + (ent:OBBMaxs().z + 8) * ent:GetUp()

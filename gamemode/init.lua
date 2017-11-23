@@ -1215,6 +1215,7 @@ end)
 
 -- Player can bind this to use either an item's DataName (any item with that type) or a UID (a specific item).
 concommand.Add("rpg_useitem", function(sender, command, arguments)
+	print(table.concat(arguments, " "))
 	local item = sender:GetItemByUIDOrDataName(table.concat(arguments, " "))
 	if item then
 		sender:UseItem(item)

@@ -179,6 +179,14 @@ function SKIN:PaintTooltip(panel)
 	surface.SetDrawColor(self.tooltip2)
 	surface.DrawOutlinedRect(0, 0, w, h)
 	--self:DrawGenericBackground(0, 0, w, h, self.tooltip)
+	
+	-- HACK: wtf
+	panel.ArrowPosX = panel.ArrowPosX or 0
+	panel.ArrowPosY = panel.ArrowPosY or 0
+	panel.ArrowWide = panel.ArrowWide or 0
+	panel.ArrowTall = panel.ArrowTall or 0
+	--
+
 	panel:DrawArrow(0, 0)
 
 	DisableClipping(false)

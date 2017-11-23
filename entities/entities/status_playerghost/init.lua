@@ -21,8 +21,8 @@ function ENT:DelayedPlayerSet()
 
 		local owner = self:GetOwner()
 		if owner:IsValid() then
-			local r, g, b, a = owner:GetColor()
-			owner:SetColor(r, g, b, 1)
+			local color = owner:GetColor()
+			owner:SetColor(color.r, color.g, color.b, 1)
 
 			owner:SetSolid(SOLID_CUSTOM)
 			owner:SetCollisionGroup(COLLISION_GROUP_DEBRIS_TRIGGER)
@@ -37,8 +37,8 @@ end
 function ENT:PlayerSet(pPlayer, bExists)
 	pPlayer.m_PlayerGhost = self
 	pPlayer:StripWeapons()
-	local r, g, b, a = pPlayer:GetColor()
-	pPlayer:SetColor(r, g, b, 1)
+	local color = pPlayer:GetColor()
+	pPlayer:SetColor(color.r, color.g, color.b, 1)
 
 	self.m_Delay = CurTime() + 0.1
 	self.Think = self.DelayedPlayerSet
@@ -49,8 +49,8 @@ function ENT:OnRemove()
 	if owner:IsValid() and owner.m_PlayerGhost == self then
 		owner.m_PlayerGhost = nil
 
-		local r, g, b, a = owner:GetColor()
-		owner:SetColor(r, g, b, 255)
+		local color = owner:GetColor()
+		owner:SetColor(color.r, color.g, color.b, 255)
 
 		owner:SetSolid(SOLID_BBOX)
 		owner:SetCollisionGroup(COLLISION_GROUP_PLAYER)

@@ -23,9 +23,9 @@ function EFFECT:Think()
 		self.Entity:SetPos(ent:GetPos())
 		self.DoDraw = true
 		self.Ent = ent
-		local r, g, b, a = ent:GetColor()
+		local color = ent:GetColor()
 		r = math.max(20, r - FrameTime() * 200)
-		ent:SetColor(r, r, r, a)
+		ent:SetColor(color.r, color.r, color.r, color.a)
 	else
 		return CurTime() < self.Threshold
 	end

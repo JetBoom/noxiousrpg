@@ -33,9 +33,9 @@ hook.Add("PostDrawOpaqueRenderables", "FloatiePostDrawOpaqueRenderables", functi
 				local oldright = ang:Right()
 
 				local tw, th = surface.GetTextSize(tab.Text)
-				local _, __, ___, enta = ent:GetColor()
+				local color = ent:GetColor()
 
-				colBG.a = delta * 255 * (enta / 255)
+				colBG.a = delta * 255 * (color.a / 255)
 				tab.Color.a = colBG.a
 
 				ang:RotateAroundAxis(ang:Right(), 270)

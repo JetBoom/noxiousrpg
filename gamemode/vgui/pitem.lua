@@ -75,7 +75,7 @@ function PANEL:ContainerPanelClicked(containerpanel)
 		if MySelf:TransferItem(item, container, cx - self:GetWide() * 0.5, cy - self:GetTall() * 0.5) then
 			surface.PlaySound("buttons/lever8.wav")
 			--SetActiveItemPanel(nil)
-			RunConsoleCommand("rpg_transferitem", item.UID, container.UID)
+			RunConsoleCommand("rpg_transferitem", item.ID, container.ID)
 		else
 			surface.PlaySound("buttons/button8.wav")
 		end
@@ -207,6 +207,7 @@ function PANEL:OnMouseDoublePressed()
 	self:Deactivate()
 
 	local item = self:GetItem()
+	PrintTable(item)
 	if item then
 		local itemdata = self:GetItemData()
 		if itemdata.OnMouseDoublePressed and itemdata.OnMouseDoublePressed(item, self) then
@@ -217,7 +218,7 @@ function PANEL:OnMouseDoublePressed()
 			if itemdata.OnUse then
 				itemdata.OnUse(item, MySelf)
 			end
-			RunConsoleCommand("rpg_useitem", item.UID)
+			RunConsoleCommand("rpg_useitem", item.ID)
 			DEBUG("Use itemid "..tostring(item))
 		end
 	end
@@ -245,7 +246,7 @@ end
 local function AskDropOKDoClick(self)
 	local item = self:GetParent().Item
 	if item then
-		RunConsoleCommand("rpg_dropitem", item.UID, self.NumberWang:GetValue())
+		RunConsoleCommand("rpg_dropitem", item.ID, self.NumberWang:GetValue())
 	end
 	self:GetParent():Close()
 end
@@ -327,11 +328,11 @@ function PANEL:SetDragging(drag)
 				if item:GetAmount() > 1 and (input.IsKeyDown(KEY_LSHIFT) or input.IsKeyDown(KEY_RSHIFT)) then
 					self:AskDropAmount()
 				else
-					RunConsoleCommand("rpg_dropitem", item.UID, item:GetAmount())
+					RunConsoleCommand("rpg_dropitem", item.ID, item:GetAmount())
 				end
 			end
 		elseif MySelf:MoveItem(item, x, y) then
-			RunConsoleCommand("rpg_moveitem", item.UID, x, y)
+			RunConsoleCommand("rpg_moveitem", item.ID, x, y)
 		end
 
 		self:RefreshPosition()
