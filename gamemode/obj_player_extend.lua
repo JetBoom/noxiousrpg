@@ -1040,6 +1040,16 @@ function meta:GetMaxMana()
 	return self.MaxMana or 0
 end
 
+function meta:StatusHook(func)
+	for _, ent in pairs(ents.FindByClass("status*")) do
+		if ent:GetOwner() == self then
+			if ent[func] then
+				ent[func](ent)
+			end
+		end
+	end
+end
+
 -- Try not to use this version, varargs are slow.
 function meta:StatusWeaponHook(func, ...)
 	for _, ent in pairs(ents.FindByClass("status*")) do
