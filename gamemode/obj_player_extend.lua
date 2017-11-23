@@ -431,9 +431,9 @@ function meta:ProcessDamage(attacker, inflictor, dmginfo)
 		local stamina = self:GetStamina()
 
 		dmginfo:SetDamage(damage - math.min(1, stamina / 75) * damage * STAMINA_ABSORPTION[damagetype])
-		self:SetStamina(math.max(0, stamina - damage * STAMINA_DAMAGE[damagetype]), true)*/
+		self:SetStamina(math.max(0, stamina - damage * STAMINA_DAMAGE[damagetype]))*/
 
-		self:SetStamina(math.max(0, self:GetStamina() - dmginfo:GetDamage() * STAMINA_DAMAGE[damagetype]), true)
+		self:SetStamina(math.max(0, self:GetStamina() - dmginfo:GetDamage() * STAMINA_DAMAGE[damagetype]))
 	end]]
 end
 

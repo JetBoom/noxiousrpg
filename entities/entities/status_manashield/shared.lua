@@ -17,7 +17,7 @@ function ENT:ProcessDamage(attacker, inflictor, dmginfo)
 			local owner = self:GetOwner()
 
 			dmginfo:SetDamage(damage * 0.75)
-			owner:SetMana(math.max(0, owner:GetMana() - damage), true)
+			owner:SetMana(math.max(0, owner:GetMana() - damage))
 
 			local effectdata = EffectData()
 			effectdata:SetEntity(owner)

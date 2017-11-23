@@ -35,7 +35,7 @@ function ENT:OnHit(eHitEntity, fDamage, vHitPos, vHitNormal, vOurOldVelocity)
 		if status:IsValid() then
 			local spelltab = SPELLS.threadoffate
 			if spelltab then
-				owner:SetMana(math.min(owner:GetMana() + spelltab.Mana, owner:GetMaxMana()), true)
+				owner:SetMana(math.min(owner:GetMana() + spelltab.Mana, owner:GetMaxMana()))
 			end
 
 			status:SetTarget(eHitEntity)

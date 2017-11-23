@@ -16,7 +16,7 @@ function ENT:PlayerSet(pPlayer, bExists)
 	local mana = pPlayer:GetMana()
 	local amount = pPlayer:GetSkill(SKILL_INTELLIGENCE)
 	pPlayer:SetMaxMana(GAMEMODE:GetMaxMana(amount), GAMEMODE:GetManaRegeneration(amount) - 2)
-	pPlayer:SetMana(mana, true)
+	pPlayer:SetMana(mana)
 end
 
 function ENT:OnRemove()
@@ -25,6 +25,6 @@ function ENT:OnRemove()
 		local mana = pPlayer:GetMana()
 		local amount = pPlayer:GetSkill(SKILL_INTELLIGENCE)
 		pPlayer:SetMaxMana(GAMEMODE:GetMaxMana(amount), GAMEMODE:GetManaRegeneration(amount) - 2)
-		pPlayer:SetMana(mana, true)
+		pPlayer:SetMana(mana)
 	end
 end

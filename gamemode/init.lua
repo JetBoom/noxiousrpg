@@ -490,9 +490,14 @@ function GM:Initialize()
 end
 
 function GM:AddNetworkStrings()
+	util.AddNetworkString("rpg_playerspawn")
+
+	util.AddNetworkString("rpg_mana")
+	util.AddNetworkString("rpg_stamina")
 	util.AddNetworkString("rpg_skill")
 	util.AddNetworkString("rpg_skills")
 	util.AddNetworkString("rpg_convo_upd")
+	util.AddNetworkString("rpg_floatie")
 end
 
 function GM:InitPostEntity()
@@ -768,7 +773,6 @@ end
 function GM:InitialVariables(pl)
 	pl.InitialSpawned = CurTime()
 	pl.LastInfo = {}
-	pl.NextReqInfo = 0
 	pl.LastDeath = 0
 	pl:SetNextAttack(0)
 	pl:ClearLastAttacker()
@@ -906,10 +910,10 @@ function GM:PlayerInitialSpawnBasedOn(pl, tab, isfirstspawn)
 		pl:SetHealth(tab.Health)
 	end
 	--[[if tab.Stamina then
-		pl:SetStamina(tab.Stamina, true)
+		pl:SetStamina(tab.Stamina)
 	end]]
 	if tab.Mana then
-		pl:SetMana(tab.Mana, true)
+		pl:SetMana(tab.Mana)
 	end
 
 	if not pl:IsMonster() then
@@ -1056,9 +1060,9 @@ function GM:PlayerSpawn(pl)
 
 	pl:SetHealth(math.min(pl:Health(), pl:GetMaxHealth()))
 
-	umsg.Start("PlayerSpawn")
-		umsg.Entity(pl)
-	umsg.End()
+	net.Start("rpg_playerspawn")
+	net.WriteEntity(pl)
+	net.Broadcast()
 end
 
 function GM:PlayerUseWeapon(pl, item, onlyputon, silent)
@@ -1264,24 +1268,6 @@ concommand.Add("rpg_dropitem", function(sender, command, arguments)
 	local item = Items[id]
 	if item then
 		sender:DropItem(item, math.ceil(tonumber(arguments[2]) or 1))
-	end
-end)
-
-concommand.Add("reqinfo", function(sender, command, arguments)
-	if CurTime() <= sender.NextReqInfo then return end
-	sender.NextReqInfo = CurTime() + 0.5
-
-	local ent = Entity(tonumber(arguments[1]) or 1)
-	if ent.Info then
-		local str = ent:Info(sender)
-		if str and str ~= sender.LastInfo[ent] then
-			sender.LastInfo[ent] = str
-
-			umsg.Start("recinfo", sender)
-				umsg.Entity(ent)
-				umsg.String(str)
-			umsg.End()
-		end
 	end
 end)
 
