@@ -147,9 +147,8 @@ local function ContextScreenClick(self, aimvec, mc, pressed, pl, tr, camerapos)
 					local menu = DermaMenu()
 					menu:SetPos(MousePos())
 					for i = 1, #self.ContextMenuOptions, 2 do
-						if menu:AddOption(self.ContextMenuOptions[i], self.ContextMenuOptions[i + 1]) then
-							menu.Panels[#menu.Panels].Entity = self
-						end
+						local panel = menu:AddOption(self.ContextMenuOptions[i], self.ContextMenuOptions[i + 1])
+						panel.Entity = self
 					end
 					menu:AddSpacer()
 					menu:AddOption("Do nothing")

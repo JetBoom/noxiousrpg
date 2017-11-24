@@ -341,17 +341,12 @@ end)
 
 -- Edited to allow a fourth argument, the local camera position.
 -- Do NOT use the local camera position sent by the client for distance and sanity checks!!!
-function GM:CallScreenClickHook(bDown, mousecode, AimVector)
-	local idown
-	if bDown then
-		idown = 1
-	else
-		idown = 0
-	end
-
+function GM:GUIMousePressed(mouseCode, AimVector)
+	local idown = input.IsMouseDown(mouseCode) and 1 or 0
 	local CameraPos = GetCameraPos()
-	RunConsoleCommand("cnc", idown, mousecode, AimVector.x, AimVector.y, AimVector.z, CameraPos.x, CameraPos.y, CameraPos.z)
-	hook.Call("ContextScreenClick", GAMEMODE, AimVector, mousecode, bDown, LocalPlayer(), CameraPos)
+
+	RunConsoleCommand("cnc", idown, mouseCode, AimVector.x, AimVector.y, AimVector.z, CameraPos.x, CameraPos.y, CameraPos.z)
+	gamemode.Call("ContextScreenClick", AimVector, mouseCode, idown ~= 0, LocalPlayer(), CameraPos)
 end
 
 concommand.Add("_rpg_setviewoffset", function(pl, command, arguments)
