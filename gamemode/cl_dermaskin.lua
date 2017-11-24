@@ -185,9 +185,11 @@ function SKIN:PaintTooltip(panel)
 	panel.ArrowPosY = panel.ArrowPosY or 0
 	panel.ArrowWide = panel.ArrowWide or 0
 	panel.ArrowTall = panel.ArrowTall or 0
+	
+	if panel.Contents then
+		panel:DrawArrow(0, 0)
+	end
 	--
-
-	panel:DrawArrow(0, 0)
 
 	DisableClipping(false)
 end
