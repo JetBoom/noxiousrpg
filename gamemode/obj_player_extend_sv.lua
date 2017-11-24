@@ -252,8 +252,8 @@ function meta:Respawn()
 		self:SetGhost(false)
 		self:ForceRespawn()
 		self:SetHealth(math.ceil(self:GetMaxHealth() * 0.2))
-		--self:SetStamina(0, true)
-		self:SetMana(0, true)
+		--self:SetStamina(0)
+		self:SetMana(0)
 
 		self:SendMessage("You have been resurrected!~sweapons/stunstick/alyx_stunner1.wav", "COLOR_LIMEGREEN", true)
 	else
@@ -489,34 +489,36 @@ function meta:BeneficialAction(pl)
 end
 meta.HelpfulAction = meta.BeneficialAction
 
---[[function meta:SetStamina(stamina, send)
+--[[function meta:SetStamina(stamina, nosend)
 	self.Stamina = stamina
 	self.StaminaBase = CurTime()
-	if send then
+
+	if not nosend then
 		self:UpdateStamina()
 	end
 end]]
 
-function meta:SetMana(mana, send)
+function meta:SetMana(mana, nosend)
 	self.Mana = mana
 	self.ManaBase = CurTime()
-	if send then
+
+	if not nosend then
 		self:UpdateMana()
 	end
 end
 
 --[[function meta:UpdateStamina()
-	umsg.Start("SLS", self)
-		umsg.Float(self.Stamina)
-		umsg.Float(self.StaminaBase)
-	umsg.End()
+	net.Start("rpg_stamina")
+		net.WriteFloat(self.Stamina)
+		net.WriteFloat(self.StaminaBase)
+	net.Send(self)
 end]]
 
 function meta:UpdateMana()
-	umsg.Start("SLM", self)
-		umsg.Float(self.Mana)
-		umsg.Float(self.ManaBase)
-	umsg.End()
+	net.Start("rpg_mana")
+		net.WriteFloat(self.Mana)
+		net.WriteFloat(self.ManaBase)
+	net.Send(self)
 end
 
 meta.OldSetMaxHealth = FindMetaTable("Entity").SetMaxHealth
@@ -578,27 +580,6 @@ end
 
 function meta:SetTeamID(iTeam)
 	self:SetTeam(iTeam)
-end
-
-function meta:LMR(int, args)
-	umsg.Start("lmr", self)
-		umsg.Short(int)
-		umsg.String(args or "")
-	umsg.End()
-end
-
-function meta:LMG(int, args)
-	umsg.Start("lmg", self)
-		umsg.Short(int)
-		umsg.String(args or "")
-	umsg.End()
-end
-
-function meta:LM(int, args)
-	umsg.Start("lm", self)
-		umsg.Short(int)
-		umsg.String(args or "")
-	umsg.End()
 end
 
 function meta:SetLastAttacker(attacker)

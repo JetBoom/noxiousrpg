@@ -431,9 +431,9 @@ function meta:ProcessDamage(attacker, inflictor, dmginfo)
 		local stamina = self:GetStamina()
 
 		dmginfo:SetDamage(damage - math.min(1, stamina / 75) * damage * STAMINA_ABSORPTION[damagetype])
-		self:SetStamina(math.max(0, stamina - damage * STAMINA_DAMAGE[damagetype]), true)*/
+		self:SetStamina(math.max(0, stamina - damage * STAMINA_DAMAGE[damagetype]))*/
 
-		self:SetStamina(math.max(0, self:GetStamina() - dmginfo:GetDamage() * STAMINA_DAMAGE[damagetype]), true)
+		self:SetStamina(math.max(0, self:GetStamina() - dmginfo:GetDamage() * STAMINA_DAMAGE[damagetype]))
 	end]]
 end
 
@@ -1022,14 +1022,14 @@ function meta:ResetSpeed(skill)
 	else
 		stat.Start(self:CallMonsterFunction("GetSpeed", skill) or GAMEMODE:GetPlayerSpeed(skill or self:GetSkill(SKILL_DEXTERITY)))
 			self:StatusWeaponHook0("ResetSpeed")
-		self:SetSpeed(stat.End())
+		self:SetSpeed(stat.Get())
 	end
 end
 
 function meta:ResetJumpPower(skill)
 	stat.Start(self:CallMonsterFunction("GetJumpPower", skill) or GAMEMODE:GetPlayerJumpPower(skill or self:GetSkill(SKILL_DEXTERITY)))
 		self:StatusWeaponHook0("ResetJumpPower")
-	self:SetJumpPower(stat.End())
+	self:SetJumpPower(stat.Get())
 end
 
 --[[function meta:GetMaxStamina()
@@ -1040,7 +1040,19 @@ function meta:GetMaxMana()
 	return self.MaxMana or 0
 end
 
-function meta:StatusHook(func)
+-- Try not to use the vararg (...) version of these, varargs are slow in lua.
+
+function meta:StatusHook(func, ...)
+	for _, ent in pairs(ents.FindByClass("status*")) do
+		if ent:GetOwner() == self then
+			if ent[func] then
+				ent[func](ent, ...)
+			end
+		end
+	end
+end
+
+function meta:StatusHook0(func)
 	for _, ent in pairs(ents.FindByClass("status*")) do
 		if ent:GetOwner() == self then
 			if ent[func] then
@@ -1050,7 +1062,46 @@ function meta:StatusHook(func)
 	end
 end
 
--- Try not to use this version, varargs are slow.
+function meta:StatusHook1(func, a)
+	for _, ent in pairs(ents.FindByClass("status*")) do
+		if ent:GetOwner() == self then
+			if ent[func] then
+				ent[func](ent, a)
+			end
+		end
+	end
+end
+
+function meta:StatusHook2(func, a, b)
+	for _, ent in pairs(ents.FindByClass("status*")) do
+		if ent:GetOwner() == self then
+			if ent[func] then
+				ent[func](ent, a, b)
+			end
+		end
+	end
+end
+
+function meta:StatusHook3(func, a, b, c)
+	for _, ent in pairs(ents.FindByClass("status*")) do
+		if ent:GetOwner() == self then
+			if ent[func] then
+				ent[func](ent, a, b, c)
+			end
+		end
+	end
+end
+
+function meta:StatusHook4(func, a, b, c, d)
+	for _, ent in pairs(ents.FindByClass("status*")) do
+		if ent:GetOwner() == self then
+			if ent[func] then
+				ent[func](ent, a, b, c, d)
+			end
+		end
+	end
+end
+
 function meta:StatusWeaponHook(func, ...)
 	for _, ent in pairs(ents.FindByClass("status*")) do
 		if ent:GetOwner() == self then

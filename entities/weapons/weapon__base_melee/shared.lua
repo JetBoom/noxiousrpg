@@ -128,8 +128,8 @@ function SWEP:GetSwingTime()
 	end
 
 	stat.Start(swingtime)
-	self.Owner:StatusHook("AlterSwingTime")
-	return stat.End(), multiplier
+	self.Owner:StatusHook0("AlterSwingTime")
+	return stat.Get(), multiplier
 end
 
 function SWEP:Swing()

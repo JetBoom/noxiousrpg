@@ -1,10 +1,10 @@
 GM.Floaties = {}
 local Floaties = GM.Floaties
 
-usermessage.Hook("floatie", function(um)
-	local ent = um:ReadEntity()
-	local colid = um:ReadChar()
-	local text = um:ReadString()
+net.Receive("rpg_floatie", function(length)
+	local ent = net.ReadEntity()
+	local text = net.ReadString()
+	local colid = net.ReadUInt(4)
 
 	if ent:IsValid() then
 		ent:Floatie(text, colid)

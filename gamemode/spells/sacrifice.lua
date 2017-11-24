@@ -37,7 +37,7 @@ if SERVER then
 		pl:HelpfulAction(target)
 
 		pl:SetHealth(curhealth - todrain)
-		target:SetMana(target:GetMana() + togive, true)
+		target:SetMana(target:GetMana() + togive)
 	end
 end
 

@@ -9,9 +9,9 @@ function meta:ChatBubble(text, radius, filter)
 	radius = radius or TALK_RADIUS
 
 	net.Start("chatbubble")
-		net.WriteEntity(self)
-		net.WriteFloat(radius)
-		net.WriteString(text)
+	net.WriteEntity(self)
+	net.WriteFloat(radius)
+	net.WriteString(text)
 	net.Send(filter or self:GetChatBubbleFilter(radius))
 end
 util.AddNetworkString("chatbubble")
@@ -31,12 +31,12 @@ function meta:GetChatBubbleFilter(radius)
 	return tab
 end
 
-function meta:Floatie(text, colid, filter)
-	umsg.Start("floatie", filter)
-		umsg.Entity(self)
-		umsg.Char(colid)
-		umsg.String(text)
-	umsg.End()
+function meta:Floatie(text, colid, rec)
+	net.Start("rpg_floatie")
+	net.WriteEntity(self)
+	net.WriteString(text)
+	net.WriteUInt(colid, 4)
+	net.Send(rec)
 end
 
 -- TODO: Have a maximum amount of decaying objects. If the limit is reached then start removing things. Sort by decay time left, lowest gets top priority.

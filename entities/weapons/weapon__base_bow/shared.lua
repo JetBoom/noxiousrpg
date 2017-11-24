@@ -34,7 +34,7 @@ function SWEP:PrimaryAttack()
 
 	stat.Start(self:GetBaseDrawTime())
 		self.Owner:StatusWeaponHook0("AlterDrawTime")
-	self:SetDrawEnd(CurTime() + stat.End())
+	self:SetDrawEnd(CurTime() + stat.Get())
 
 	self:SetState(STATE_BOW_DRAWING)
 

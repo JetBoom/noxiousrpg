@@ -49,7 +49,6 @@ function stat.SubMulPercent(percent)
 	stat.AddMulPercent(-percent)
 end
 
-function stat.End()
+function stat.Get()
 	return VALUE * VALMUL
 end
-stat.Get = stat.End

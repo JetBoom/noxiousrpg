@@ -110,13 +110,13 @@ end
 function meta:GetDamage(...)
 	stat.Start(self.GetBaseMeleeDamage and self:GetBaseMeleeDamage(...) or 1)
 		self.Owner:StatusWeaponHook("GetMeleeDamage", self, ...)
-	return stat.End()
+	return stat.Get()
 end
 
 function meta:GetDamageType(...)
 	stat.Start(self.GetBaseMeleeDamageType and self:GetBaseMeleeDamageType(...) or DMGTYPE_SLASHING)
 		self.Owner:StatusWeaponHook("GetMeleeDamageType", self, ...)
-	return stat.End()
+	return stat.Get()
 end
 
 if SERVER then

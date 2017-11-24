@@ -281,14 +281,14 @@ net.Receive("rpg_skill", function(length)
 	end
 end)
 
-usermessage.Hook("SLM", function(um)
-	MySelf.Mana = um:ReadFloat()
-	MySelf.ManaBase = um:ReadFloat()
+net.Receive("rpg_mana", function(length)
+	LocalPlayer().Mana = net.ReadFloat()
+	LocalPlayer().ManaBase = net.ReadFloat()
 end)
 
---[[usermessage.Hook("SLS", function(um)
-	MySelf.Stamina = um:ReadFloat()
-	MySelf.StaminaBase = um:ReadFloat()
+--[[net.Receive("rpg_stamina", function(length)
+	LocalPlayer().Stamina = net.ReadFloat()
+	LocalPlayer().StaminaBase = net.ReadFloat()
 end)]]
 
 GM.m_PreviousCriminal = false
@@ -589,17 +589,11 @@ function EyeTrace(length, mask)
 	return util.TraceLine({start = pos, endpos = pos + (length or MOUSE_TRACEDISTANCE) * MySelf:GetAimVector(), mask = mask or MASK_SOLID, filter = MySelf})
 end
 
-usermessage.Hook("PlayerSpawn", function(um)
-	local pl = um:ReadEntity()
+net.Receive("rpg_playerspawn", function(length)
+	local pl = net.ReadEntity()
+
 	if pl:IsValid() then
 		gamemode.Call("PlayerSpawn", pl)
-	end
-end)
-
-usermessage.Hook("recinfo", function(um)
-	local ent = um:ReadEntity()
-	if ent:IsValid() and ent.Info then
-		ent:Info(um)
 	end
 end)
 
