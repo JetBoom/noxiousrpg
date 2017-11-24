@@ -420,8 +420,8 @@ function meta:UpdateSkills(rec)
 	net.Start("rpg_skills")
 	net.WriteEntity(self)
 
-	for skillid, amount in ipairs(self.Skills) do
-		net.WriteFloat(amount)
+	for skillid, amount in ipairs(SKILLS) do
+		net.WriteFloat(self:GetSkill(skillid))
 	end
 
 	net.Send(rec or self)
