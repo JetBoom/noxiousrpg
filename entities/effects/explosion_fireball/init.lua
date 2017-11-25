@@ -27,7 +27,8 @@ function EFFECT:Init(data)
 	local force = 350 + magnitude * 250
 
 	for i=1, 16 + magnitude * 10 do
-		local heading = (normal + VectorRand()):Normalize()
+		local heading = normal + VectorRand()
+		heading:Normalize()
 		local vel = math.Rand(0.25, 1) * force * heading
 
 		local particle = emitter:Add("particle/smokestack", pos + heading * 8)

@@ -100,7 +100,8 @@ function EFFECT:Render()
 							render.DrawBeam(bpos, bpos2, 8, 6, 6, COLOR_CYAN)
 							render.DrawBeam(bpos, bpos2, 8, 4, 4, COLOR_BLUE)
 						end
-						normal = (normal + VectorRand() * 0.3):Normalize()
+						normal = normal + VectorRand() * 0.3
+						normal:Normalize()
 						bpos = bpos2
 						bpos2 = bpos2 + normal * 4
 					end

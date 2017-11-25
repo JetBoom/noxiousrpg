@@ -19,7 +19,7 @@ function ENT:CreateParticle(pos, r, g, b)
 	particle:SetRoll(math.Rand(0, 360))
 	particle:SetRollDelta(math.Rand(-30, 30))
 	particle:SetColor(r * math.Rand(0.7, 1), g * math.Rand(0.7, 1), b * math.Rand(0.7, 1))
-	particle:SetVelocity(VectorRand():Normalize() * math.Rand(2, 64))
+	particle:SetVelocity(VectorRand():GetNormalized() * math.Rand(2, 64))
 end
 
 function ENT:OnRemove()
@@ -33,12 +33,14 @@ function ENT:OnRemove()
 		for i, beamposition in ipairs(beampositions) do
 			local nextbeam = beampositions[i + 1]
 			if nextbeam then
-				local norm = (nextbeam - beamposition):Normalize()
+				local norm = nextbeam - beamposition
+				norm:Normalize()
+
 				local dist = nextbeam:Distance(beamposition)
 				for x=0, 1, 0.1 do
 					local basepos = beamposition + dist * x * norm
 					for _=1, math.random(1, 4) do
-						self:CreateParticle(basepos + VectorRand():Normalize() * math.Rand(1, 8), r, g, b)
+						self:CreateParticle(basepos + VectorRand():GetNormalized() * math.Rand(1, 8), r, g, b)
 					end
 				end
 			end
@@ -48,7 +50,7 @@ function ENT:OnRemove()
 	if target:IsValid() then
 		local pos = target:LocalToWorld(target:OBBCenter())
 		for i=1, 16 do
-			self:CreateParticle(pos + VectorRand():Normalize() * math.Rand(8, 32), r, g, b)
+			self:CreateParticle(pos + VectorRand():GetNormalized() * math.Rand(8, 32), r, g, b)
 		end
 	end
 
@@ -64,17 +66,21 @@ function ENT:Think()
 		local ownerpos = owner:CastPos()
 		local targetpos = target:LocalToWorld(target:OBBCenter())
 		if self.BeamPositions then
-			local norm = (targetpos - ownerpos):Normalize()
+			local norm = targetpos - ownerpos
+			norm:Normalize()
+
 			local ft = FrameTime()
 			for i=1, 16 do
 				local desired = ownerpos + targetpos:Distance(ownerpos) * (i / 16) * norm
 				local current = self.BeamPositions[i]
 				local power = ft * math.max(0.15, (math.abs(i - 12) / 4)) * math.min(desired:Distance(current) * 1.25, 512)
-				self.BeamPositions[i] = current + (desired - current):Normalize() * power
+				self.BeamPositions[i] = current + (desired - current):GetNormalized() * power
 			end
 		else
 			self.BeamPositions = {}
-			local norm = (targetpos - ownerpos):Normalize()
+			local norm = targetpos - ownerpos
+			norm:Normalize()
+
 			local dist = targetpos:Distance(ownerpos)
 			for i=1, 16 do
 				self.BeamPositions[i] = ownerpos + (i / 16) * dist * norm
@@ -111,7 +117,7 @@ function ENT:DrawTranslucent()
 
 	local r, g, b = col.r, col.g, col.b
 	for i=1, math.random(1, 3) do
-		self:CreateParticle(endpos + VectorRand():Normalize() * math.Rand(3, 16), 255, 255, 255)
+		self:CreateParticle(endpos + VectorRand():GetNormalized() * math.Rand(3, 16), 255, 255, 255)
 	end
 
 	local rt = RealTime()

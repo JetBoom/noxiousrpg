@@ -44,8 +44,7 @@ function ents.GetEntitiesInSphereArea(vCenter, aAngle, fRadius, fWidth, fHeight)
 	for _, ent in pairs(ents.FindInSphere(vCenter, fRadius)) do
 		local vNearest = ent:NearestPoint(pos)
 		if vNearest:Distance(vCenter) <= fRadius then -- Inside the sphere. FindInSphere works differently client and server side so I assume here that it doesn't actually work properly.
-			local vToNearest = (vNearest - vCenter):Normalize()
-			local aToNearest = vToNearest:Angle()
+			local aToNearest = (vNearest - vCenter):Angle()
 			if math.abs(math.AngleDifference(aToNearest.yaw, aAngle.yaw)) <= fWidth and math.abs(math.AngleDifference(aToNearest.pitch, aAngle.pitch)) <= fHeight then -- Inside the square.
 				tab[#tab + 1] = ent
 			end

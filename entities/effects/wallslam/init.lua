@@ -26,7 +26,9 @@ function EFFECT:Init(data)
 	local vBounds = Vector(6, 6, 6)
 	local vNBounds = Vector(-6, -6, -6)
 	for i=1, math.random(5, 8) do
-		local dir = ((normal * 2 + VectorRand()) * 0.3333333):Normalize()
+		local dir = (normal * 2 + VectorRand()) * 0.3333333
+		dir:Normalize()
+
 		local ent = ClientsideModel("models/props_junk/Rock001a.mdl", RENDERGROUP_OPAQUE)
 		ent:SetPos(pos + dir * 16)
 		ent:PhysicsInitBox(vNBounds, vBounds)

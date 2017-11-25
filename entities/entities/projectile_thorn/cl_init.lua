@@ -22,7 +22,7 @@ function ENT:DrawTranslucent()
 	render.SetMaterial(matGlow)
 	render.DrawSprite(pos, siz, siz, color_white)
 	render.SetMaterial(matBlur)
-	render.DrawBeam(pos, pos + math.min(0.25, CurTime() - self.Created) * -192 * vel:Normalize(), 1, 1, 0)
+	render.DrawBeam(pos, pos + math.min(0.25, CurTime() - self.Created) * -192 * vel:GetNormalized(), 1, 1, 0)
 
 	self:DrawModel()
 end

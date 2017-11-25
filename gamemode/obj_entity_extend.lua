@@ -54,7 +54,10 @@ function meta:IsProjectile()
 end
 
 function meta:GetHeadingTo(target)
-	return (target:LocalToWorld(target:OBBCenter()) - self:LocalToWorld(self:OBBCenter())):Normalize()
+	local dir = target:WorldSpaceCenter() - self:WorldSpaceCenter()
+	dir:Normalize()
+
+	return dir
 end
 
 function meta:GetAmount()
@@ -96,14 +99,14 @@ function meta:ThrowFromPosition(pos, force)
 		local phys = self:GetPhysicsObject()
 		if phys:IsValid() and phys:IsMoveable() then
 			local nearest = self:NearestPoint(pos)
-			phys:ApplyForceOffset(force * 50 * (nearest - pos):Normalize(), nearest)
+			phys:ApplyForceOffset(force * 50 * (nearest - pos):GetNormalized(), nearest)
 		end
 	elseif self:GetMoveType() >= MOVETYPE_WALK and self:GetMoveType() < MOVETYPE_PUSH then
 		self:SetGroundEntity(NULL)
 		if self.KnockDown and FORCE_KNOCKDOWN <= math.abs(force) then
 			self:KnockDown()
 		end
-		self:SetVelocity(force * (self:LocalToWorld(self:OBBCenter()) - pos):Normalize())
+		self:SetVelocity(force * (self:LocalToWorld(self:OBBCenter()) - pos):GetNormalized())
 	end
 end
 

@@ -29,7 +29,7 @@ function ENT:OnRemove()
 
 		local particle = emitter:Add(fleck and "Effects/fleck_cement"..math.random(1, 2) or "particles/smokey", particlepos)
 		particle:SetDieTime(magnitude * 2 * math.Rand(0.5, 1.5))
-		particle:SetVelocity((1 - magnitude) * 256 * (particlepos - center):Normalize())
+		particle:SetVelocity((1 - magnitude) * 256 * (particlepos - center):GetNormalized())
 		particle:SetStartSize(1)
 		particle:SetStartAlpha(math.Rand(90, 180))
 		particle:SetEndAlpha(0)

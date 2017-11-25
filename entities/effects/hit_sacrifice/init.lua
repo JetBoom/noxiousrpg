@@ -19,7 +19,7 @@ function EFFECT:Init(data)
 		ent:EmitSound("nox/powerup.wav", 70 + self.Magnitude * 5, math.Rand(125, 135))
 
 		for i=1, math.random(8, 12 + self.Magnitude * 4) do
-			table.insert(self.Headings, VectorRand():Normalize())
+			table.insert(self.Headings, VectorRand():GetNormalized())
 		end
 	else
 		self.DieTime = 0

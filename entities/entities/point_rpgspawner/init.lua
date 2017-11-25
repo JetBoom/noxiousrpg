@@ -55,7 +55,7 @@ function ENT:AcceptInput(name, activator, caller, args)
 			local ent = ents.Create(class)
 			if ent:IsValid() then
 				ent.SpawnerUID = self.UID
-				ent:SetPos(self:GetPos() + Vector(math.Rand(-1, 1), math.Rand(-1, 1), 0):Normalize() * math.Rand(-self.Radius, self.Radius))
+				ent:SetPos(self:GetPos() + Vector(math.Rand(-1, 1), math.Rand(-1, 1), 0):GetNormalized() * math.Rand(-self.Radius, self.Radius))
 				ent:SetAngles(Angle(0, math.Rand(0, 360), 0))
 				ent:Spawn()
 				ent:DropToFloor()

@@ -56,7 +56,7 @@ end
 local EFFECT = {}
 EFFECT.LifeTime = 0.5
 function EFFECT:Init(data)
-	
+
 	local pos = data:GetOrigin()
 	local normal = data:GetNormal() * -1
 	local damage = data:GetMagnitude()
@@ -80,7 +80,7 @@ function EFFECT:Init(data)
 
 	for i=1, math.random(40, 60) + 30 * damage do
 		eyeangles:RotateAroundAxis(eyeforward, math.Rand(0, 360))
-		local heading = VectorRand():Normalize()
+		local heading = VectorRand():GetNormalized()
 		local particle = emitter:Add("effects/spark", pos + heading * 8)
 		particle:SetVelocity((400 + force) * heading)
 		particle:SetDieTime(math.Rand(0.5, 0.85))

@@ -183,7 +183,7 @@ function ExplosiveEffect(pos, maxrange, damage, dmgtype)
 					end
 
 					if dmgtype == DMGTYPE_FIRE then
-						phys:ApplyForceOffset(damage * 1000 * maxrange / dist * (physpos - pos):Normalize(), pos2)
+						phys:ApplyForceOffset(damage * 1000 * maxrange / dist * (physpos - pos):GetNormalized(), pos2)
 						if not rag.Burnt then
 							local effectdata = EffectData()
 								effectdata:SetOrigin(physpos)
@@ -192,7 +192,7 @@ function ExplosiveEffect(pos, maxrange, damage, dmgtype)
 							rag:EmitSound("ambient/fire/mtov_flame2.wav", 65, math.random(105, 110))
 						end
 					elseif dmgtype == DMGTYPE_ENERGY then
-						phys:ApplyForceOffset(damage * 1000 * maxrange / dist * (physpos - pos):Normalize(), pos2)
+						phys:ApplyForceOffset(damage * 1000 * maxrange / dist * (physpos - pos):GetNormalized(), pos2)
 						if not rag.Electricuted then
 							local effectdata = EffectData()
 								effectdata:SetOrigin(physpos)
@@ -200,13 +200,13 @@ function ExplosiveEffect(pos, maxrange, damage, dmgtype)
 							util.Effect("deatheffect_electric", effectdata)
 						end
 					elseif dmgtype == DMGTYPE_COLD then
-						phys:ApplyForceOffset(damage * 500 * maxrange / dist * (physpos - pos):Normalize(), pos2)
+						phys:ApplyForceOffset(damage * 500 * maxrange / dist * (physpos - pos):GetNormalized(), pos2)
 						local effectdata = EffectData()
 							effectdata:SetOrigin(physpos)
 							effectdata:SetEntity(pl)
 						util.Effect("deatheffect_ice", effectdata)
 					else
-						phys:ApplyForceOffset(damage * 1000 * maxrange / dist * (physpos - pos):Normalize(), pos2)
+						phys:ApplyForceOffset(damage * 1000 * maxrange / dist * (physpos - pos):GetNormalized(), pos2)
 					end
 				end
 			end

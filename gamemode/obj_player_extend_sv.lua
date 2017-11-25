@@ -733,7 +733,7 @@ function meta:CreateGibs()
 		if gib:IsValid() then
 			local phys = gib:GetPhysicsObject()
 			if phys:IsValid() then
-				phys:SetVelocityInstantaneous((gib:GetPos() - center) * 2 + vel * math.Rand(0.8, 1) + math.Rand(-0.2, 0.2) * speed * VectorRand():Normalize())
+				phys:SetVelocityInstantaneous((gib:GetPos() - center) * 2 + vel * math.Rand(0.8, 1) + math.Rand(-0.2, 0.2) * speed * VectorRand():GetNormalized())
 				phys:AddAngleVelocity(speed * 0.02 * VectorRand())
 			end
 		end

@@ -10,7 +10,8 @@ function EFFECT:Init(data)
 	emitter:SetNearClip(24, 32)
 
 	for i=1, 16 + magnitude * 16 do
-		local heading = (VectorRand() + dir):Normalize()
+		local heading = VectorRand() + dir
+		heading:Normalize()
 		local particle = emitter:Add("particles/smokey", pos + heading * 4)
 		particle:SetDieTime(math.Rand(0.5, 1.5))
 		particle:SetStartAlpha(255)

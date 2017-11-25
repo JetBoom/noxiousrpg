@@ -83,7 +83,7 @@ function ENT:DrawTranslucent()
 	render.DrawSprite(pos, size1, size1, col)
 	render.DrawSprite(pos, size2, size2, COLOR_WHITE)
 
-	local particle = self.Emitter:Add("sprites/light_glow02_add", pos + VectorRand():Normalize() * math.Rand(4, 24))
+	local particle = self.Emitter:Add("sprites/light_glow02_add", pos + VectorRand():GetNormalized() * math.Rand(4, 24))
 	particle:SetDieTime(math.Rand(0.5, 0.75))
 	particle:SetStartAlpha(230)
 	particle:SetEndAlpha(50)

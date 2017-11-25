@@ -45,7 +45,7 @@ function ENT:DrawTranslucent()
 
 	local emitter = self.Emitter
 	for i=1, 2 do
-		local particle = emitter:Add("sprites/light_glow02_add", pos + VectorRand():Normalize() * math.Rand(2, 6))
+		local particle = emitter:Add("sprites/light_glow02_add", pos + VectorRand():GetNormalized() * math.Rand(2, 6))
 		particle:SetDieTime(math.Rand(0.3, 0.5))
 		particle:SetStartAlpha(230)
 		particle:SetEndAlpha(50)
@@ -56,7 +56,7 @@ function ENT:DrawTranslucent()
 		particle:SetColor(50, 100, 255)
 
 		particle = emitter:Add("effects/spark", pos)
-		particle:SetVelocity(VectorRand():Normalize() * math.Rand(16, 32))
+		particle:SetVelocity(VectorRand():GetNormalized() * math.Rand(16, 32))
 		particle:SetDieTime(math.Rand(0.6, 0.8))
 		particle:SetStartAlpha(230)
 		particle:SetEndAlpha(60)
@@ -84,7 +84,7 @@ function EFFECT:Init(data)
 	emitter:SetNearClip(24, 32)
 
 	for i=1, math.random(40, 60) + 30 * magnitude do
-		local heading = VectorRand():Normalize()
+		local heading = VectorRand():GetNormalized()
 
 		local particle = emitter:Add("effects/spark", pos + heading * 8)
 		particle:SetVelocity(heading * 500)
@@ -99,7 +99,7 @@ function EFFECT:Init(data)
 	end
 
 	for i=1, math.random(8, 12) + 6 * magnitude do
-		local particle = emitter:Add("particles/flamelet"..math.random(1, 5), pos + (math.Rand(32, 48) + magnitude * 8) * VectorRand():Normalize())
+		local particle = emitter:Add("particles/flamelet"..math.random(1, 5), pos + (math.Rand(32, 48) + magnitude * 8) * VectorRand():GetNormalized())
 		particle:SetDieTime(1)
 		particle:SetStartAlpha(math.Rand(230, 250))
 		particle:SetStartSize(20 * math.Rand(4, 6))

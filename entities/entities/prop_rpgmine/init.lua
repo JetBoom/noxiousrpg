@@ -99,7 +99,8 @@ function ENT:Destroyed(dmginfo)
 		if table.Count(subcontents[i]) > 0 then
 			local ent = SpawnItem("ore")
 			if ent:IsValid() then
-				local heading = (VectorRand() + self:GetUp()):Normalize()
+				local heading = VectorRand() + self:GetUp()
+				heading:Normalize()
 
 				ent:SetPos(pos + heading * 8)
 				ent:SetAngles(VectorRand():Angle())

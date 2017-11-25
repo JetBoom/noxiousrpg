@@ -5,7 +5,7 @@ function EFFECT:Init(data)
 	local max = Vector(3,3,3)
 	local min = max * -1
 	self.Entity:PhysicsInitBox(min,max)
-	self.Entity:SetCollisionBounds(min,max) 
+	self.Entity:SetCollisionBounds(min,max)
 	self.Entity:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
 	self.Entity:SetMoveType(MOVETYPE_VPHYSICS)
 	self.Entity:SetSolid(SOLID_VPHYSICS)
@@ -21,7 +21,7 @@ end
 
 function EFFECT:Think()
 	self.Emitter:SetPos(self.Entity:GetPos())
-	local tr = util.TraceLine({start = self.Entity:GetPos(), endpos = self.Entity:GetPos() + self.Entity:GetVelocity():Normalize() * 16, mask = MASK_NPCWORLDSTATIC})
+	local tr = util.TraceLine({start = self.Entity:GetPos(), endpos = self.Entity:GetPos() + self.Entity:GetVelocity():GetNormalized() * 16, mask = MASK_NPCWORLDSTATIC})
 	if tr.Hit then
 		self.Living = -5
 	end

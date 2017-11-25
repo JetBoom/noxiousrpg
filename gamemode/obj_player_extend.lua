@@ -42,7 +42,7 @@ function meta:NewEyePos()
 		local startpos = self:EyePos()
 		local tr = util.TraceHull({start = startpos, endpos = attach.Pos + attach.Ang:Forward() * -2.2, mask = MASK_SOLID, filter = player.GetAll(), mins = EyeHullMins, maxs = EyeHullMaxs})
 		if tr.Hit then
-			return tr.HitPos + (tr.HitPos - startpos):Normalize() * 4
+			return tr.HitPos + (tr.HitPos - startpos):GetNormalized() * 4
 		end
 
 		return tr.HitPos
@@ -484,7 +484,7 @@ function meta:EyeLevelPos()
 end
 
 function meta:IsFacing(pos, thresh)
-	return self:GetAimVector():Dot((pos - self:EyeLevelPos()):Normalize()) >= (thresh or 0.25)
+	return self:GetAimVector():Dot((pos - self:EyeLevelPos()):GetNormalized()) >= (thresh or 0.25)
 end
 
 function meta:ShouldGuardAgainst(attacker, wep, damage, damagetype, hitdata, ...)

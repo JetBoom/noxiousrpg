@@ -19,7 +19,8 @@ function GM:PrePlayerDraw(pl)
 	--[[if drawing then return end
 	if MySelf == pl and not pl.ThirdPerson and pl:OldAlive() and pl:ShouldDrawLocalPlayer() then
 		local eyes = EyePos()
-		local clipnormal = (pl:LocalToWorld(pl:OBBCenter()) - eyes):Normalize()
+		local clipnormal = pl:LocalToWorld(pl:OBBCenter()) - eyes
+		clipnormal:Normalize()
 
 		render.EnableClipping(true)
 		render.PushCustomClipPlane(clipnormal, clipnormal:Dot(eyes + clipnormal * 4.75))
@@ -84,7 +85,7 @@ function GM:GhostRenderScreenspaceEffects()
 		for _, ent in pairs(ents.FindByClass("point_resurrectiongate")) do
 			local pos = ent:LocalToWorld(ent:OBBCenter()) + vOffset
 			local distance = eyepos:Distance(pos)
-			local dot = (pos - eyepos):Normalize():Dot(EyeVector()) - distance * 0.0005
+			local dot = (pos - eyepos):GetNormalized():Dot(EyeVector()) - distance * 0.0005
 			if dot > 0 then
 				fGateColorOffset = math.max(dot * 0.85, fGateColorOffset)
 

@@ -25,7 +25,7 @@ if SERVER then
 			effectdata:SetEntity(target)
 			effectdata:SetScale(force)
 			effectdata:SetMagnitude(skill)
-			effectdata:SetNormal((hitpos - origin):Normalize())
+			effectdata:SetNormal((hitpos - origin):GetNormalized())
 		util.Effect("hit_toss", effectdata, true, true)
 
 		pl:HarmfulAction(target)

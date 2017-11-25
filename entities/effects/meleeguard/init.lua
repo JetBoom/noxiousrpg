@@ -15,7 +15,9 @@ function EFFECT:Init(data)
 	emitter:SetNearClip(30, 40)
 	local grav = Vector(0, 0, -800)
 	for i = 0, math.Rand(damage * 0.75, damage * 1.25) do
-		local heading = VectorRand():Normalize()
+		local heading = VectorRand()
+		heading:Normalize()
+
 		local particle = emitter:Add("effects/spark", pos + heading * 4)
 		particle:SetVelocity(heading * math.Rand(20, 380))
 		particle:SetDieTime(math.Rand(0.6, 2))

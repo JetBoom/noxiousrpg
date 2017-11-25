@@ -54,7 +54,9 @@ function EFFECT:Init(data)
 	emitter:Finish()
 
 	for i=1, math.random(4, 8) do
-		local dir = (normal + VectorRand()):Normalize()
+		local dir = normal + VectorRand()
+		dir:Normalize()
+
 		local rock = ents.Create("prop_physics")
 		rock:SetModel("models/props_debris/concrete_chunk05g.mdl")
 		rock:SetPos(pos + dir * 8)
@@ -63,13 +65,13 @@ function EFFECT:Init(data)
 
 		local scale = math.Rand(1, 5)
 		rock:SetModelScale(scale, 0)
-		rock:PhysicsInitBox(rock:OBBMins(), rock:OBBMaxs())  
-		rock:SetCollisionBounds(rock:OBBMins(), rock:OBBMaxs())  
+		rock:PhysicsInitBox(rock:OBBMins(), rock:OBBMaxs())
+		rock:SetCollisionBounds(rock:OBBMins(), rock:OBBMaxs())
 		rock:SetMoveType(MOVETYPE_VPHYSICS)
 		rock:SetSolid(SOLID_VPHYSICS)
 		self.Rocks[i] = rock
-		local phys = rock:GetPhysicsObject()  
-		if phys:IsValid() then  
+		local phys = rock:GetPhysicsObject()
+		if phys:IsValid() then
 			phys:Wake()
 			phys:EnableGravity(true)
 			phys:ApplyForceCenter(dir * math.Rand(8000, 24000))

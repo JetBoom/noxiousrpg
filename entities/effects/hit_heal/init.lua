@@ -21,7 +21,7 @@ function EFFECT:Init(data)
 		ent:EmitSound("nox/heal.wav", 70 + self.Magnitude * 5, math.Rand(120, 125))
 
 		for i=1, math.random(4, 6) + self.Magnitude * 2 do
-			table.insert(self.Headings, VectorRand():Normalize())
+			table.insert(self.Headings, VectorRand():GetNormalized())
 		end
 	else
 		self.DieTime = 0

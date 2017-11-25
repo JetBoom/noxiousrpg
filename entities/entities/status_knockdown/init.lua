@@ -71,7 +71,7 @@ function ENT:Think()
 		local heading = owner:GetVelocity()
 		local speed = heading:Length()
 		if FORCE_KNOCKDOWN_NOGETUP <= speed then
-			heading = heading:Normalize()
+			heading:Normalize()
 			local startpos = owner:GetPos()
 			local tr = util.TraceHull({start = startpos, endpos = startpos + speed * FrameTime() * 2 * heading, mask = MASK_PLAYERSOLID, filter = owner, mins = owner:OBBMins(), maxs = owner:OBBMaxs()})
 			if tr.Hit and tr.HitNormal.z < 0.65 and 0 < tr.HitNormal:Length() and not (tr.Entity:IsValid() and tr.Entity:IsPlayer()) and not owner:CallMonsterFunction("KnockDownWallSlam", self, tr) then

@@ -63,7 +63,7 @@ function ENT:SetProjectileHeading(vHeading)
 end
 
 function ENT:GetProjectileHeading()
-	return self:GetVelocity():Normalize()
+	return self:GetVelocity():GetNormalized()
 end
 
 function ENT:SetSkillLevel(fSkill)

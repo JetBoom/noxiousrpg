@@ -53,7 +53,7 @@ function ENT:DrawTranslucent()
 	render.DrawSprite(pos, size1, size2, COLOR_WHITE)
 
 	local emitter = self.Emitter
-	local particle = emitter:Add("sprites/light_glow02_add", pos + VectorRand():Normalize() * math.Rand(2, 6))
+	local particle = emitter:Add("sprites/light_glow02_add", pos + VectorRand():GetNormalized() * math.Rand(2, 6))
 	particle:SetDieTime(math.Rand(0.2, 0.4))
 	particle:SetStartAlpha(230)
 	particle:SetEndAlpha(50)
@@ -64,7 +64,7 @@ function ENT:DrawTranslucent()
 	particle:SetColor(255, 220, 100)
 
 	local particle = emitter:Add("Effects/fire_cloud"..math.random(1, 2), pos)
-	particle:SetVelocity(VectorRand():Normalize() * math.Rand(0.6, 1) * size)
+	particle:SetVelocity(VectorRand():GetNormalized() * math.Rand(0.6, 1) * size)
 	particle:SetDieTime(math.Rand(0.4, 0.6))
 	particle:SetStartAlpha(230)
 	particle:SetEndAlpha(60)
@@ -77,7 +77,7 @@ function ENT:DrawTranslucent()
 
 	if math.random(1, 2) == 1 then
 		local particle = emitter:Add("particle/smokestack", pos)
-		particle:SetVelocity(VectorRand():Normalize() * math.Rand(8, 32))
+		particle:SetVelocity(VectorRand():GetNormalized() * math.Rand(8, 32))
 		particle:SetDieTime(math.Rand(1.6, 2.2))
 		particle:SetStartAlpha(220)
 		particle:SetEndAlpha(0)
