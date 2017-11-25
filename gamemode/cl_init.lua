@@ -149,8 +149,10 @@ function GM:HookGetLocal(pl)
 	self.VitalsPanel = VitalsPanel
 end
 
-function GM:_ShouldDrawLocalPlayer()
-	return not MySelf:GetRagdollEntity()
+function GM:_ShouldDrawLocalPlayer(pl)
+	--return not MySelf:GetRagdollEntity()
+	return pl:IsPlayingTaunt()
+	or pl.KnockedDown and pl.KnockedDown:IsValid()
 end
 
 function GM:_HUDShouldDraw(name)
@@ -368,12 +370,12 @@ function GM:CalcView(pl, origin, angles, fov, znear, zfar)
 		if pl:ShouldDrawLocalPlayer() then
 			origin = pl:GetCameraPos(origin, angles)
 
-			if not pl.ThirdPerson then
+			--[[if not pl.ThirdPerson then
 				local attach = pl:GetAttachmentByName("eyes")
 				if attach then
 					angles.roll = angles.roll + math.Clamp(attach.Ang.roll * 0.2, -25, 25)
 				end
-			end
+			end]]
 		elseif pl:GetRagdollEntity() then
 			local rpos, rang = pl:GetRagdollEyes()
 			if rpos then
