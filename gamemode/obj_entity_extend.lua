@@ -84,6 +84,11 @@ function meta:TakeSpecialDamage(damage, damagetype, attacker, inflictor, hitpos)
 	self:TakeDamageInfo(dmginfo)
 end
 
+function meta:TakeNonLethalDamage(damage, damagetype, attacker, inflictor, hitpos)
+	self.BlockLethal = true
+	self:TakeSpecialDamage(damage, damagetype, attacker, inflictor, hitpos)
+end
+
 function meta:ThrowFromPosition(pos, force)
 	if force == 0 or self:IsProjectile() then return end
 

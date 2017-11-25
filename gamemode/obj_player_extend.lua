@@ -435,6 +435,14 @@ function meta:ProcessDamage(attacker, inflictor, dmginfo)
 
 		self:SetStamina(math.max(0, self:GetStamina() - dmginfo:GetDamage() * STAMINA_DAMAGE[damagetype]))
 	end]]
+
+	if self.BlockLethal then
+		self.BlockLethal = nil
+
+		if dmginfo:GetDamage() >= self:Health() - 1 then
+			dmginfo:SetDamage(self:Health() - 1)
+		end
+	end
 end
 
 function meta:ShouldNotCollide(ent)
