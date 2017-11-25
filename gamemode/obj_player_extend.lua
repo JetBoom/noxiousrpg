@@ -524,7 +524,7 @@ function meta:MeleeAttack(wep, ...)
 	local hit = data.HitWorld
 
 	for _, ent in pairs(data.Entities) do
-		if ent ~= self and ent:IsInteractable() and not (ent:IsPlayer() and not gamemode.Call("PlayerCanHarm", self, ent)) then
+		if ent ~= self --[[and ent:IsInteractable()]] and not (ent:IsPlayer() and not gamemode.Call("PlayerCanHarm", self, ent)) then
 			local hitdata = data.HitResults[ent]
 
 			if ent:IsCharacter() and ent.ShouldGuardAgainst and ent:ShouldGuardAgainst(self, wep, damage, damagetype, hitdata, ...) then
