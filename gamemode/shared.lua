@@ -164,11 +164,6 @@ function GM:Move(pl, move)
 		move:SetForwardSpeed(0)
 		move:SetSideSpeed(0)
 	else
-		if pl.status_confusion and pl.status_confusion:IsValid() then
-			move:SetSideSpeed(move:GetSideSpeed() * -1)
-			move:SetForwardSpeed(move:GetForwardSpeed() * -1)
-		end
-
 		local speed = move:GetForwardSpeed()
 		local sidespeed = move:GetSideSpeed()
 		if speed < -88 then
@@ -181,10 +176,10 @@ function GM:Move(pl, move)
 			end
 		end
 
-		if pl.Precast then
+		--[[if pl.Precast then
 			move:SetSideSpeed(move:GetSideSpeed() * 0.6)
 			move:SetForwardSpeed(move:GetForwardSpeed() * 0.6)
-		end
+		end]]
 	end
 
 	local wep = pl:GetActiveWeapon()

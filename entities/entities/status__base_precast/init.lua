@@ -10,18 +10,12 @@ function ENT:OnInitialize()
 	self:PrecastInitialize()
 end
 
-function ENT:OwnerHitByMelee(attacker, attackerwep, damage, damagetype, hitdata, ...)
-	self:Remove() -- TODO: Check if the spell can be interuppted. Call OnInterrupt function from the spell table if there is one.
-end
-
 function ENT:PlayerSet(pPlayer, bExists)
 	pPlayer.Precast = self
 
 	stat.Start(self.SpellData.CastTime)
 		pPlayer:StatusWeaponHook0("AlterCastTime")
 	self.FinishCastTime = CurTime() + stat.Get()
-
-	pPlayer:ResetJumpPower()
 
 	self:PrecastPlayerSet(pPlayer, bExists)
 end
@@ -33,10 +27,6 @@ function ENT:OnRemove()
 	local owner = self:GetOwner()
 	if owner.Precast == self then
 		owner.Precast = nil
-	end
-
-	if owner:IsValid() then
-		owner:ResetJumpPower()
 	end
 
 	self:PrecastOnRemove()

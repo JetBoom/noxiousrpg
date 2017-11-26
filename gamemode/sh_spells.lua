@@ -21,7 +21,7 @@ function RegisterSpell(dataname, spelldata, basedata)
 	_G["SPELL_"..string.upper(dataname)] = spelldata
 end
 
-function BaseSpellOnPrecast(self, pl)
+--[[function BaseSpellOnPrecast(self, pl)
 	local status = pl:GiveStatus(self.PrecastStatus)
 	if status:IsValid() then
 		status:SetSkillLevel(pl:GetSkill(self.Skill))
@@ -39,7 +39,7 @@ end
 function BaseSpellOnFail(self, pl)
 	pl:RemoveStatus(self.PrecastStatus, true, true)
 end
-BaseSpellOnInterrupt = BaseSpellOnFail
+BaseSpellOnInterrupt = BaseSpellOnFail]]
 
 for _, filename in pairs(file.Find("noxiousrpg/gamemode/spells/*.lua", "LUA")) do
 	SPELL = {}
@@ -55,21 +55,11 @@ for _, filename in pairs(file.Find("noxiousrpg/gamemode/spells/*.lua", "LUA")) d
 	SPELL.Name = SPELL.Name or (string.upper(string.sub(spellname, 1, 1))..string.sub(spellname, 2))
 	SPELL.Mana = SPELL.Mana or 0
 	SPELL.CastTime = SPELL.CastTime or 0
-	if SPELL.OnPrecast == nil then
-		SPELL.OnPrecast = BaseSpellOnPrecast
-	end
-	if SPELL.OnCast == nil then
-		SPELL.OnCast = BaseSpellOnCast
-	end
-	if SPELL.OnFail == nil then
-		SPELL.OnFail = BaseSpellOnFail
-	end
-	if SPELL.OnInterrupt == nil then
-		SPELL.OnInterrupt = BaseSpellOnInterrupt
-	end
+
 	if SPELL.PrecastStatus == nil then
 		SPELL.PrecastStatus = "precast_"..SPELLNAME
 	end
+
 	SPELL.Skill = SPELL.Skill or SPELL.SkillRequirements and SPELL.SkillRequirements[1] or 0
 
 	RegisterSpell(spellname, SPELL)

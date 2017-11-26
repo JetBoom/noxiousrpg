@@ -17,7 +17,6 @@ SPELL.ProjectileClass = "projectile_fireball"
 
 if SERVER then
 	function SPELL:OnCast(pl)
-		pl:RemoveStatus(self.PrecastStatus, true, true)
 		pl:EmitSound("ambient/fire/gascan_ignite1.wav")
 	end
 
