@@ -3,7 +3,6 @@ SPELL.Description = "Fires a Thread of Fate. These threads tie you between yours
 SPELL.CastTime = 0.5
 SPELL.Mana = 20
 SPELL.SkillRequirements = {[SKILL_VOIDMAGIC] = 0}
-SPELL.PrecastStatus = "precast_"..SPELLNAME
 
 SPELL.ProjectileSpeed = 1200
 
@@ -24,4 +23,4 @@ if SERVER then
 	end
 end
 
-RegisterPrecast("mystic01")
+PRECAST.Base = "status_precast_mystic01"

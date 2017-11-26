@@ -32,7 +32,7 @@ function ENT:ResetJumpPower()
 	end
 end
 
-function ENT:ProcessDamage(attacker, inflictor, dmginfo)
+function ENT:ProcessDamage(dmginfo)
 	if self.Created ~= CurTime() then
 		dmginfo:SetDamage(dmginfo:GetDamage() * 0.7)
 	end

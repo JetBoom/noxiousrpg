@@ -120,6 +120,33 @@ function GM:AllowPlayerPickup(pl, ent)
 	return false
 end
 
+function GM:EntityTakeDamage(ent, dmginfo)
+	if ent:IsWeapon() or ent.m_IsStatus then return end -- Weapons and status entities only process damage for their owners.
+
+	local attacker, inflictor = dmginfo:GetAttacker(), dmginfo:GetInflictor()
+
+	if attacker == inflictor and attacker:IsProjectile() and dmginfo:GetDamageType() == DMG_CRUSH then -- Fixes projectiles doing physics-based damage.
+		dmginfo:SetDamage(0)
+		dmginfo:ScaleDamage(0)
+		return
+	end
+
+	local wl = ent:WaterLevel()
+	if wl > 0 then
+		if dmginfo:GetDamageType() == DMGTYPE_ENERGY then
+			dmginfo:SetDamage(dmginfo:GetDamage() * (1 + wl * 0.0333))
+		elseif dmginfo:GetDamageType() == DMGTYPE_FIRE then
+			dmginfo:SetDamage(dmginfo:GetDamage() * (1 - wl * 0.0333))
+		end
+	end
+
+	zone.ProcessDamage(ent, dmginfo)
+
+	if ent.ProcessDamage then
+		ent:ProcessDamage(dmginfo)
+	end
+end
+
 function GM:EntityShouldPersist(ent)
 	return ent.LockedDown or ent.Persist or PERSIST[ent:GetClass()] or ent.IsPersistent and ent:IsPersistent() or ent:GetItem() and ent:GetItem().Persist
 end

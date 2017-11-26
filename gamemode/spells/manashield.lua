@@ -5,7 +5,6 @@ SPELL.CastTime = 1
 SPELL.ItemConsumation = SPELL.ItemRequirements
 SPELL.Mana = 10
 SPELL.SkillRequirements = {[SKILL_VOIDMAGIC] = 40}
-SPELL.PrecastStatus = "precast_"..SPELLNAME
 
 SPELL.Duration = 50
 SPELL.DurationPerSkillLevel = SKILLS_RMAX * 10
@@ -18,4 +17,4 @@ if SERVER then
 	end
 end
 
-RegisterPrecast("mystic01")
+PRECAST.Base = "status_precast_mystic01"

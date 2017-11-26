@@ -4,7 +4,6 @@ SPELL.Description = "The target's vision is temporarally distorted. They may hav
 SPELL.CastTime = 1.5
 SPELL.Mana = 20
 SPELL.SkillRequirements = {[SKILL_ARCANEMAGIC] = 60}
-SPELL.PrecastStatus = "precast_"..SPELLNAME
 SPELL.UsesTarget = true
 
 SPELL.EffectDuration = 5
@@ -19,4 +18,4 @@ if SERVER then
 	end
 end
 
-RegisterPrecast("mystic01")
+PRECAST.Base = "status_precast_mystic01"

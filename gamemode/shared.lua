@@ -145,26 +145,6 @@ function GM:EntityCreated(ent)
 	end
 end
 
-function GM:EntityTakeDamage(ent, inflictor, attacker, amount, dmginfo)
-	if attacker == inflictor and attacker:IsProjectile() and dmginfo:GetDamageType() == DMG_CRUSH then -- Fixes projectiles doing physics-based damage.
-		dmginfo:SetDamage(0)
-		dmginfo:ScaleDamage(0)
-		return
-	end
-
-	if dmginfo:GetDamageType() == DMGTYPE_ENERGY then
-		dmginfo:SetDamage(dmginfo:GetDamage() * (1 + ent:WaterLevel() * 0.125))
-	end
-
-	if ent:IsWeapon() or ent.m_IsStatus then return end -- Weapons and status entities only process damage for their owners.
-
-	zone.ProcessDamage(ent, attacker, inflictor, dmginfo)
-
-	if ent.ProcessDamage then
-		ent:ProcessDamage(attacker, inflictor, dmginfo)
-	end
-end
-
 -- Move is very costly so if there are any status entities that want to change something here, it needs to be coded in this function directly.
 function GM:Move(pl, move)
 	if pl:WaterLevel() <= 1 and not pl:IsOnGround() then -- Lower the stupid air control of the engine.

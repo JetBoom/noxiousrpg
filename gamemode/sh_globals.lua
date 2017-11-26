@@ -684,7 +684,7 @@ SPELLENCHANT_EFFECTS[SPELLENCHANT_EFFECT_ONSTRUCK] = "when struck"
 
 RADIUS_GENERICACTIONMESSAGE = 2048
 
-function GenericWearableProcessDamage(self, attacker, inflictor, dmginfo)
+function GenericWearableProcessDamage(self, dmginfo)
 	local item = self:GetItem()
 	if item then
 		if item.DamageMultipliers then

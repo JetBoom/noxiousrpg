@@ -3,7 +3,6 @@ SPELL.Description = "Solidifies air in to a concentrated needle."
 SPELL.CastTime = 0.75
 SPELL.Mana = 5
 SPELL.SkillRequirements = {[SKILL_AEROMAGIC] = 0}
-SPELL.PrecastStatus = "precast_"..SPELLNAME
 
 SPELL.ProjectileDamage = 3
 SPELL.ProjectileDamagePerSkill = 0.01
@@ -30,45 +29,37 @@ if SERVER then
 			pl:GlobalHook("PlayerLaunchedSpellProjectile", ent, self)
 		end
 	end
-
-	scripted_ents.Register({
-		Base = "status__base_precast",
-		Type = "anim",
-		SpellData = SPELL
-	}, "status_precast_"..SPELLNAME)
 end
+
+PRECAST.Base = "status__base_precast"
 
 if CLIENT then
 	local matGlow = Material("sprites/glow04_noz")
-	scripted_ents.Register({
-		Base = "status__base_precast",
-		Type = "anim",
-		SpellData = SPELL,
 
-		Initialize = function(self)
-			self.BaseClass.Initialize(self)
-			self.AmbientSound = CreateSound(self, "nox/energyhum1.wav")
-			self.Seed = math.Rand(0, 10)
-			self:SetRenderBounds(Vector(-92, -92, -92), Vector(92, 92, 92))
-		end,
+	function PRECAST:Initialize()
+		self.BaseClass.Initialize(self)
 
-		Think = function(self)
-			self.AmbientSound:PlayEx(0.8, math.sin(RealTime()) + 100)
-			self.BaseClass.Think(self)
-		end,
+		self.AmbientSound = CreateSound(self, "nox/energyhum1.wav")
+		self.Seed = math.Rand(0, 10)
+		self:SetRenderBounds(Vector(-92, -92, -92), Vector(92, 92, 92))
+	end
 
-		Draw = function(self)
-			local owner = self:GetOwner()
-			if owner:IsValid() then
-				render.SetMaterial(matGlow)
-				local size = math.abs(math.sin((RealTime() + self.Seed) * 8) * 64) + 4
-				render.DrawSprite(owner:GetCastPos(), size, 32, color_white)
-			end
-		end,
+	function PRECAST:Think()
+		self.AmbientSound:PlayEx(0.8, math.sin(RealTime()) + 100)
+		self.BaseClass.Think(self)
+	end
 
-		OnRemove = function(self)
-			self.BaseClass.OnRemove(self)
-			self.AmbientSound:Stop()
+	function PRECAST:Draw()
+		local owner = self:GetOwner()
+		if owner:IsValid() then
+			render.SetMaterial(matGlow)
+			local size = math.abs(math.sin((RealTime() + self.Seed) * 8) * 64) + 4
+			render.DrawSprite(owner:GetCastPos(), size, 32, color_white)
 		end
-	}, "status_precast_"..SPELLNAME)
+	end
+
+	function PRECAST:OnRemove()
+		self.BaseClass.OnRemove(self)
+		self.AmbientSound:Stop()
+	end
 end

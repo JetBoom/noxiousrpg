@@ -5,7 +5,6 @@ SPELL.CastTime = 1.25
 SPELL.ItemConsumation = SPELL.ItemRequirements
 SPELL.Mana = 15
 SPELL.SkillRequirements = {[SKILL_ENTROPICMAGIC] = 1}
-SPELL.PrecastStatus = "precast_"..SPELLNAME
 SPELL.UsesTarget = true
 
 SPELL.Duration = 45
@@ -23,7 +22,7 @@ if SERVER then
 	end
 end
 
-RegisterPrecast("air01")
+PRECAST.Base = "status_precast_air01"
 
 if SERVER then
 	scripted_ents.Register({Base = "status__base_protectorbs", Type = "anim", DamageMultipliers = {[DMGTYPE_COLD] = 0.75}}, "status_coldward")

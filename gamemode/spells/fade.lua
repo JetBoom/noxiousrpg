@@ -5,7 +5,6 @@ SPELL.CastTime = 3
 SPELL.ItemConsumation = SPELL.ItemRequirements
 SPELL.Mana = 40
 SPELL.SkillRequirements = {[SKILL_ARCANEMAGIC] = 40}
-SPELL.PrecastStatus = "precast_"..SPELLNAME
 
 SPELL.Duration = 90
 SPELL.DurationPerSkillLevel = SKILLS_RMAX * 30
@@ -18,4 +17,4 @@ if SERVER then
 	end
 end
 
-RegisterPrecast("mystic01")
+PRECAST.Base = "status_precast_mystic01"

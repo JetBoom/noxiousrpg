@@ -1,21 +1,12 @@
 SPELLS = {}
 
-function RegisterPrecast(basename, members)
-	if not SPELL.PrecastStatus then
-		ErrorNoHalt("Failed to register precast status for "..tostring(basename)..". Spell table has no 'PrecastStatus' member!")
-		return
-	end
+local function RegisterPrecast()
+	PRECAST.SpellData = SPELL
 
-	local tab = {Base = "status_precast_"..basename, Type = "anim", SpellData = SPELL}
-	if members then
-		for k, v in pairs(members) do
-			tab[k] = v
-		end
-	end
+	PRECAST.Type = PRECAST.Type or "anim"
+	PRECAST.Base = PRECAST.Base or "status__base_precast"
 
-	scripted_ents.Register(tab, "status_"..SPELL.PrecastStatus)
-
-	return scripted_ents.GetStored("status_"..SPELL.PrecastStatus)
+	scripted_ents.Register(PRECAST, "status_precast_"..SPELLNAME)
 end
 
 function RegisterSpell(dataname, spelldata, basedata)
@@ -52,6 +43,7 @@ BaseSpellOnInterrupt = BaseSpellOnFail
 
 for _, filename in pairs(file.Find("noxiousrpg/gamemode/spells/*.lua", "LUA")) do
 	SPELL = {}
+	PRECAST = {}
 
 	local spellname = string.sub(filename, 1, -5)
 	SPELLNAME = spellname
@@ -75,11 +67,17 @@ for _, filename in pairs(file.Find("noxiousrpg/gamemode/spells/*.lua", "LUA")) d
 	if SPELL.OnInterrupt == nil then
 		SPELL.OnInterrupt = BaseSpellOnInterrupt
 	end
+	if SPELL.PrecastStatus == nil then
+		SPELL.PrecastStatus = "precast_"..SPELLNAME
+	end
 	SPELL.Skill = SPELL.Skill or SPELL.SkillRequirements and SPELL.SkillRequirements[1] or 0
+
 	RegisterSpell(spellname, SPELL)
+	RegisterPrecast()
 
 	SPELLNAME = nil
 	SPELL = nil
+	PRECAST = nil
 end
 
 print(table.Count(SPELLS).." spells from files have been registered.")

@@ -5,14 +5,12 @@ SPELL.CastTime = 1
 SPELL.ItemConsumation = SPELL.ItemRequirements
 SPELL.Mana = 15
 SPELL.SkillRequirements = {[SKILL_ENTROPICMAGIC] = 10}
-SPELL.PrecastStatus = "precast_"..SPELLNAME
 
 SPELL.ProjectileDamage = 11
 SPELL.ProjectileDamagePerSkill = 0.02
 SPELL.ProjectileRadius = 32
 SPELL.ProjectileRadiusPerSkill = 0.12
 SPELL.ProjectileForce = 200
-SPELL.ProjectileForcePerSkill = 0
 SPELL.ProjectileSpeed = 900
 
 if SERVER then
@@ -43,4 +41,4 @@ if SERVER then
 	end
 end
 
-RegisterPrecast("fire01")
+PRECAST.Base = "status_precast_fire01"

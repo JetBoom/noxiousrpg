@@ -5,7 +5,6 @@ SPELL.CastTime = 1.25
 SPELL.ItemConsumation = SPELL.ItemRequirements
 SPELL.Mana = 15
 SPELL.SkillRequirements = {[SKILL_ENTROPICMAGIC] = 1}
-SPELL.PrecastStatus = "precast_"..SPELLNAME
 SPELL.UsesTarget = true
 
 SPELL.EffectDuration = 45
@@ -23,12 +22,6 @@ if SERVER then
 	end
 end
 
-RegisterPrecast("fire01")
+PRECAST.Base = "status_precast_fire01"
 
-if SERVER then
-	scripted_ents.Register({Base = "status__base_protectorbs", Type = "anim", DamageMultipliers = {[DMGTYPE_FIRE] = 0.75}}, "status_fireward")
-end
-
-if CLIENT then
-	scripted_ents.Register({Base = "status__base_protectorbs", Type = "anim", DamageMultipliers = {[DMGTYPE_FIRE] = 0.75}, GlowColor1 = Color(255, 180, 0), GlowColor2 = Color(255, 255, 0)}, "status_fireward")
-end
+scripted_ents.Register({Base = "status__base_protectorbs", Type = "anim", DamageMultipliers = {[DMGTYPE_FIRE] = 0.75}, GlowColor1 = Color(255, 180, 0), GlowColor2 = Color(255, 255, 0)}, "status_fireward")

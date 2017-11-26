@@ -10,7 +10,7 @@ function ENT:SetSkillLevel(skill)
 	self:SetDTFloat(0, skill)
 end
 
-function ENT:ProcessDamage(attacker, inflictor, dmginfo)
+function ENT:ProcessDamage(dmginfo)
 	if self.DieTime > 0 then
 		local damage = dmginfo:GetDamage()
 		if damage >= 1 then

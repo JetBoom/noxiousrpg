@@ -5,7 +5,6 @@ SPELL.CastTime = 1
 SPELL.ItemConsumation = SPELL.ItemRequirements
 SPELL.Mana = 15
 SPELL.SkillRequirements = {[SKILL_ENTROPICMAGIC] = 1}
-SPELL.PrecastStatus = "precast_"..SPELLNAME
 SPELL.UsesTarget = true
 
 SPELL.Duration = 45
@@ -23,12 +22,6 @@ if SERVER then
 	end
 end
 
-RegisterPrecast("air02")
+PRECAST.Base = "status_precast_air02"
 
-if SERVER then
-	scripted_ents.Register({Base = "status__base_protectorbs", Type = "anim", DamageMultipliers = {[DMGTYPE_ENERGY] = 0.75}}, "status_energyward")
-end
-
-if CLIENT then
-	scripted_ents.Register({Base = "status__base_protectorbs", Type = "anim", DamageMultipliers = {[DMGTYPE_ENERGY] = 0.75}, GlowColor1 = Color(255, 255, 255), GlowColor2 = Color(255, 255, 255)}, "status_energyward")
-end
+scripted_ents.Register({Base = "status__base_protectorbs", Type = "anim", DamageMultipliers = {[DMGTYPE_ENERGY] = 0.75}, GlowColor1 = Color(255, 255, 255), GlowColor2 = Color(255, 255, 255)}, "status_energyward")

@@ -421,9 +421,9 @@ function meta:CallCastSpellEnchantments(...)
 	end
 end
 
-function meta:ProcessDamage(attacker, inflictor, dmginfo)
-	self:StatusWeaponHook3("ProcessDamage", attacker, inflictor, dmginfo)
-	self:StatusWeaponHook3("PostProcessDamage", attacker, inflictor, dmginfo)
+function meta:ProcessDamage(dmginfo)
+	self:StatusWeaponHook1("ProcessDamage", dmginfo)
+	self:StatusWeaponHook1("PostProcessDamage", dmginfo)
 
 	--[[local damagetype = dmginfo:GetDamageType()
 	if STAMINA_DAMAGE[damagetype] then

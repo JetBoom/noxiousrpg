@@ -4,7 +4,6 @@ SPELL.Description = "The caster can throw their voice to make it appear that oth
 SPELL.CastTime = 3
 SPELL.Mana = 10
 SPELL.SkillRequirements = {[SKILL_ARCANEMAGIC] = 30}
-SPELL.PrecastStatus = "precast_"..SPELLNAME
 SPELL.UsesTarget = true
 
 SPELL.EffectRange = 1024
@@ -19,4 +18,4 @@ if SERVER then
 	end
 end
 
-RegisterPrecast("mystic01")
+PRECAST.Base = "status_precast_mystic01"

@@ -5,7 +5,6 @@ SPELL.Description = "Increase the movement speed of a being for a short duration
 SPELL.CastTime = 2
 SPELL.Mana = 20
 SPELL.SkillRequirements = {[SKILL_AEROMAGIC] = 40}
-SPELL.PrecastStatus = "precast_"..SPELLNAME
 SPELL.UsesTarget = true
 
 SPELL.Bonus = 30
@@ -22,4 +21,4 @@ if SERVER then
 	end
 end
 
-RegisterPrecast("air01")
+PRECAST.Base = "status_precast_air01"

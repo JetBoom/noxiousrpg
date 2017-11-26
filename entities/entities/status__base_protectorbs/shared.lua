@@ -7,7 +7,7 @@ ENT.EndSound = Sound("nox/protectoff.wav")
 
 ENT.DamageMultipliers = {}
 
-function ENT:ProcessDamage(attacker, inflictor, dmginfo)
+function ENT:ProcessDamage(dmginfo)
 	local dmgtype = dmginfo:GetDamageType()
 	if self.DamageMultipliers[dmgtype] then
 		dmginfo:SetDamage(dmginfo:GetDamage() * self.DamageMultipliers[dmgtype])

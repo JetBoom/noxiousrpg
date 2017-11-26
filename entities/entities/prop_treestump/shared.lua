@@ -4,7 +4,7 @@ function ENT:IsPersistent()
 	return true
 end
 
-function ENT:ProcessDamage(attacker, inflictor, dmginfo)
+function ENT:ProcessDamage(dmginfo)
 	if dmginfo:GetDamageType() == DMGTYPE_FIRE then
 		dmginfo:SetDamage(dmginfo:GetDamage() * 2)
 	end
@@ -12,7 +12,7 @@ function ENT:ProcessDamage(attacker, inflictor, dmginfo)
 	self:SetLumberjackingHealth(self:GetLumberjackingHealth() - dmginfo:GetDamage())
 
 	if self:GetLumberjackingHealth() <= 0 then
-		self:Destroyed(attacker, weapon, damage, damagetype)
+		self:Destroyed(dmginfo)
 	end
 end
 
@@ -26,7 +26,7 @@ function ENT:HitByMelee(attacker, weapon, damage, damagetype, hitdata, ...)
 	end
 end
 
-function ENT:Destroyed(attacker, weapon, damage, damagetype)
+function ENT:Destroyed(dmginfo)
 	if self:IsRemoving() then return end
 
 	local effectdata = EffectData()

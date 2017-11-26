@@ -4,7 +4,6 @@ SPELL.Description = "The target is temporarally deafened. They will not be able 
 SPELL.CastTime = 1.5
 SPELL.Mana = 20
 SPELL.SkillRequirements = {[SKILL_ARCANEMAGIC] = 60}
-SPELL.PrecastStatus = "precast_"..SPELLNAME
 SPELL.UsesTarget = true
 
 SPELL.EffectRange = 1024
@@ -20,4 +19,4 @@ if SERVER then
 	end
 end
 
-RegisterPrecast("mystic01")
+PRECAST.Base = "status_precast_mystic01"

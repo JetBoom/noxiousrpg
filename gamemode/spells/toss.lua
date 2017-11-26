@@ -3,7 +3,6 @@ SPELL.Description = "Modifies the velocity of an object to toss it from the cast
 SPELL.CastTime = 1.5
 SPELL.Mana = 20
 SPELL.SkillRequirements = {[SKILL_VOIDMAGIC] = 30}
-SPELL.PrecastStatus = "precast_"..SPELLNAME
 SPELL.UsesTarget = true
 
 SPELL.EffectForce = 700
@@ -36,4 +35,4 @@ if SERVER then
 	end
 end
 
-RegisterPrecast("air01")
+PRECAST.Base = "status_precast_air01"

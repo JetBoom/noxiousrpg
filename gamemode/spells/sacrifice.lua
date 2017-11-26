@@ -5,7 +5,6 @@ SPELL.CastTime = 0.75
 SPELL.ItemConsumation = SPELL.ItemRequirements
 SPELL.Mana = 0
 SPELL.SkillRequirements = {[SKILL_AEROMAGIC] = 10}
-SPELL.PrecastStatus = "precast_"..SPELLNAME
 SPELL.UsesTarget = true
 
 SPELL.HealthDrain = 15
@@ -41,4 +40,5 @@ if SERVER then
 	end
 end
 
-RegisterPrecast("mystic01", {["PrimaryColor"] = Color(220, 25, 255)})
+PRECAST.Base = "status_precast_mystic01"
+PRECAST.PrimaryColor = Color(220, 25, 255)

@@ -23,14 +23,14 @@ zone.RulesetNames = {
 	[RULESET_ARENA] = "arena"
 }
 
-function zone.ProcessDamage(ent, attacker, inflictor, dmginfo)
+function zone.ProcessDamage(ent, dmginfo)
 	local zonedata = zones[ent:GetZone()]
 	if zonedata then
 		if zonedata.Weather == WEATHER_SNOW then
 			if dmginfo:GetDamageType() == DMGTYPE_COLD then
-				dmginfo:SetDamage(dmginfo:GetDamage() * 1.25)
+				dmginfo:SetDamage(dmginfo:GetDamage() * 1.1)
 			elseif dmginfo:GetDamageType() == DMGTYPE_FIRE then
-				dmginfo:SetDamage(dmginfo:GetDamage() * 0.75)
+				dmginfo:SetDamage(dmginfo:GetDamage() * 0.9)
 			end
 		end
 	end
