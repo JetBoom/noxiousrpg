@@ -30,3 +30,10 @@ if SERVER then
 		net.Send(self)
 	end
 end
+
+function player:GlobalHook(...)
+end
+
+function WorldSound(sound, pos, amplitude, pitch)
+	EmitSound(sound, pos, 0, CHAN_AUTO, amplitude / 100, 75, 0, pitch)
+end
