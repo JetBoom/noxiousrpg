@@ -177,7 +177,7 @@ function PANEL:OnMousePressed(keyCode)
 		end
 		menu:AddSpacer()
 		menu:AddOption("Cancel")
-		menu:MakePopup()
+		menu:Open()
 	end
 end
 
