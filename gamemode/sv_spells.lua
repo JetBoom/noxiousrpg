@@ -18,6 +18,8 @@ SpellChannel = (function()
   end
 
   function meta:Bind(ent, spell)
+    if ent.SpellChannel then return end
+
     local new = setmetatable({}, meta)
     self.__index = self
 
