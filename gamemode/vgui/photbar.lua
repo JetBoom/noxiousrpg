@@ -145,7 +145,7 @@ end
 function PANEL:HotBarPressed(i)
 	local cell = self.HotBarCells[i]
 	if cell and cell:Valid() then
-		cell:DoClick()
+		cell:Select()
 	end
 end
 
@@ -161,8 +161,24 @@ function PANEL:Paint()
 	return true
 end
 
-function PANEL:DoClick()
+function PANEL:Select()
+	LocalPlayer().SelectedSpell = self.Spell
+end
 
+function PANEL:OnMousePressed(keyCode)
+	if keyCode == MOUSE_RIGHT then
+		local menu = DermaMenu()
+		menu:SetPos(MousePos())
+		for k, v in pairs(SPELLS) do
+			local panel = menu:AddOption(k, function()
+				self.Spell = v
+				self:SetIcon("gui/silkicons/ruby")
+			end)
+		end
+		menu:AddSpacer()
+		menu:AddOption("Cancel")
+		menu:MakePopup()
+	end
 end
 
 vgui.Register("DHotBarCell", PANEL, "DButton")

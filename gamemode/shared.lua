@@ -137,6 +137,19 @@ function GM:PlayerCanSeeGhost(pl, other)
 end
 
 function GM:KeyPress(pl, key)
+	if CLIENT then
+		if key == IN_ATTACK2 then
+			RunConsoleCommand('rpg_cast_start', LocalPlayer().SelectedSpell.DataName)
+		end
+	end
+end
+
+function GM:KeyRelease(pl, key)
+	if CLIENT then
+		if key == IN_ATTACK2 then
+			RunConsoleCommand('rpg_cast_complete')
+		end
+	end
 end
 
 function GM:EntityCreated(ent)
