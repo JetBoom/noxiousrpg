@@ -15,9 +15,6 @@ function RegisterSpell(dataname, spelldata, basedata)
 		table.Inherit(spelldata, basedata)
 	end
 	SPELLS[dataname] = spelldata
-	if spelldata.Name then
-		SPELLS[spelldata.Name] = spelldata
-	end
 	_G["SPELL_"..string.upper(dataname)] = spelldata
 end
 
