@@ -27,7 +27,7 @@ end
 
 function ENT:GetCastPercent()
 	local spelldata = self.SpellData
-	if spelldata.CastTime and spelldata.CastTime > 0 then
+	if spelldata.CastTime > 0 then
 		return 1 - math.Clamp((self:GetCastFinishTime() - self:GetCastTime()) / spelldata.CastTime, 0, 1)
 	end
 

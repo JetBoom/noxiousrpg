@@ -25,7 +25,7 @@ end
 	if status:IsValid() then
 		status:SetSkillLevel(pl:GetSkill(self.Skill))
 		status:SetCastTime(CurTime())
-		if self.CastTime and self.CastTime > 0 then
+		if self.CastTime > 0 then
 			status:SetCastFinishTime(CurTime() + self.CastTime)
 		end
 	end
