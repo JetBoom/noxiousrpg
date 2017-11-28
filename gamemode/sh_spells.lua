@@ -14,7 +14,9 @@ function RegisterSpell(dataname, spelldata, basedata)
 		spelldata = spelldata or {}
 		table.Inherit(spelldata, basedata)
 	end
+	SPELL.Index = #SPELLS + 1
 	SPELLS[dataname] = spelldata
+	SPELLS[SPELL.Index] = spelldata
 	_G["SPELL_"..string.upper(dataname)] = spelldata
 end
 
@@ -38,7 +40,10 @@ function BaseSpellOnFail(self, pl)
 end
 BaseSpellOnInterrupt = BaseSpellOnFail]]
 
-for _, filename in pairs(file.Find("noxiousrpg/gamemode/spells/*.lua", "LUA")) do
+local files, folders = file.Find("noxiousrpg/gamemode/spells/*.lua", "LUA")
+table.sort(files)
+
+for _, filename in pairs(files) do
 	SPELL = {}
 	PRECAST = {}
 
@@ -50,6 +55,7 @@ for _, filename in pairs(file.Find("noxiousrpg/gamemode/spells/*.lua", "LUA")) d
 
 	SPELL.DataName = spellname
 	SPELL.Name = SPELL.Name or (string.upper(string.sub(spellname, 1, 1))..string.sub(spellname, 2))
+	SPELL.Description = SPELL.Description or "N/A"
 	SPELL.Mana = SPELL.Mana or 0
 	SPELL.CastTime = SPELL.CastTime or 0
 

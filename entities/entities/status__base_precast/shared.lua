@@ -40,8 +40,8 @@ end
 function ENT:PrecastOnRemove()
 end
 
-function ENT:ResetJumpPower()
+--[[function ENT:ResetJumpPower()
 	if not self:IsRemoving() then
 		stat.Mul(0.75)
 	end
-end
+end]]

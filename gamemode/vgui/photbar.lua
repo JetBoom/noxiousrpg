@@ -169,10 +169,11 @@ function PANEL:OnMousePressed(keyCode)
 	if keyCode == MOUSE_RIGHT then
 		local menu = DermaMenu()
 		menu:SetPos(MousePos())
-		for k, v in pairs(SPELLS) do
+		for k, v in ipairs(SPELLS) do
 			local panel = menu:AddOption(k, function()
 				self.Spell = v
 				self:SetIcon("gui/silkicons/ruby")
+				self:SetTooltip(v.Name.."\n\n"..v.Description)
 			end)
 		end
 		menu:AddSpacer()

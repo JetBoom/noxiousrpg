@@ -7,7 +7,7 @@ SpellChannel = (function()
 
   local function OnComplete(self)
     if not self:IsValid() then return end
-    
+
     -- let the first caller (the timer) remove time cast time restrictions
     self.CastTime = 0
 
@@ -71,20 +71,20 @@ SpellChannel = (function()
   return meta
 end)()
 
-function entity:CastSpell(spell_name)
-  if not spell_name then return end
-  
-  local spell = SPELLS[spell_name]
+function entity:CastSpell(spell_index)
+  if not spell_index then return end
+
+  local spell = SPELLS[spell_index]
   if not spell then return end
 
   SpellChannel:Bind(self, spell)
   self.SpellChannel:CompleteCast()
 end
 
-function entity:StartCastSpell(spell_name)
-  if not spell_name then return end
-  
-  local spell = SPELLS[spell_name]
+function entity:StartCastSpell(spell_index)
+  if not spell_index then return end
+
+  local spell = SPELLS[spell_index]
   if not spell then return end
 
   SpellChannel:Bind(self, spell)
@@ -102,14 +102,14 @@ end
 
 -- Cast without chance to channel
 concommand.Add("rpg_cast", function(sender, command, arguments)
-  local spell_name = arguments[1]
-  sender:CastSpell(spell_name)
+  local spell_index = tonumber(arguments[1]) or 1
+  sender:CastSpell(spell_index)
 end)
 
 -- Player begins 'channeling' (holding) cast
 concommand.Add("rpg_cast_start", function(sender, command, arguments)
-  local spell_name = arguments[1]
-  sender:StartCastSpell(spell_name)
+  local spell_index = tonumber(arguments[1]) or 1
+  sender:StartCastSpell(spell_index)
 end)
 
 -- Player is no longer channeling spell
