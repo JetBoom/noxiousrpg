@@ -33,9 +33,9 @@ function ENT:OnHit(eHitEntity, fDamage, vHitPos, vHitNormal, vOurOldVelocity)
 			nostick = true
 			eHitEntity:EmitSound("rpgsounds/impact_flesh"..math.random(1, 2)..".wav")
 
-			if owner:IsValid() and owner:IsPlayer() and gamemode.Call("PlayerShouldSkillUp", owner, eHitEntity) then
+			--[[if owner:IsValid() and owner:IsPlayer() and gamemode.Call("PlayerShouldSkillUp", owner, eHitEntity) then
 				gamemode.Call("PlayerUseSkill", owner, SKILL_ARCHERY, eHitEntity:GetMaxHealth() * SKILLS_RMAX)
-			end
+			end]]
 		end
 
 		eHitEntity:TakeSpecialDamage(self.ProjectileDamage * 0.1 + self.ProjectileDamage * math.min(2.9, vOurOldVelocity:Length() * 0.001), DMGTYPE_CUTTING, owner, self, vHitPos)

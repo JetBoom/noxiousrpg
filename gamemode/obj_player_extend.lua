@@ -818,12 +818,12 @@ function meta:UnfreezePhysicsObjects(ent, phys)
 end
 
 function meta:SetNoSkillUps(onoff)
-	self.m_NoSkillUps = onoff
+	--self.m_NoSkillUps = onoff
 end
 meta.SetSkillLocked = meta.SetNoSkillUps
 
 function meta:GetNoSkillUps()
-	return self.m_NoSkillUps or self:IsMonster()
+	return --[[self.m_NoSkillUps or]] self:IsMonster()
 end
 meta.IsSkillLocked = meta.GetNoSkillUps
 
@@ -848,7 +848,7 @@ function meta:UseSkill(skillid, difficulty, failed)
 end
 
 function meta:SkillUp(skillid, difficulty)
-	return gamemode.Call("PlayerSkillUp", self, skillid, difficulty)
+	--return gamemode.Call("PlayerSkillUp", self, skillid, difficulty)
 end
 
 function meta:HasSkill(skillid)

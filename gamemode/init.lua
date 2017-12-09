@@ -959,17 +959,19 @@ function GM:PlayerInitialSpawnBasedOn(pl, tab, isfirstspawn)
 end
 
 function GM:PlayerCastedSpell(pl, spelltab, target, attacker)
-	if spelltab.SkillRequirements and (spelltab.SkillUpOnUse or (spelltab.SkillUpOnTarget and (target or attacker))) then
+	--[[if spelltab.SkillRequirements and (spelltab.SkillUpOnUse or (spelltab.SkillUpOnTarget and (target or attacker))) then
 		for skillid, amount in pairs(spelltab.SkillRequirements) do
 			hook.Call("PlayerUseSkill", GAMEMODE, pl, skillid, amount * SKILLS_RMAX)
 		end
-	end
+	end]]
 
 	pl:CallMonsterFunction("PlayerCastedSpell", spelltab, target, attacker)
 end
 
 function GM:PlayerUseSkill(pl, skillid, difficulty, failed)
 	if not pl:Alive() then return end
+
+	if SKILLS[skillid].Group ~= SKILLGROUP_MINOR then return end
 
 	local current = pl:GetSkill(skillid)
 	if current >= SKILLS_MAX then return end
@@ -980,23 +982,23 @@ function GM:PlayerUseSkill(pl, skillid, difficulty, failed)
 		pl:SkillUp(skillid, difficulty)
 	end
 
-	if SKILLS[skillid].Supplements then
+	--[[if SKILLS[skillid].Supplements then
 		for subskillid, subdifficulty in pairs(SKILLS[skillid].Supplements) do
 			hook.Call("PlayerUseSkill", GAMEMODE, pl, subskillid, difficulty * subdifficulty)
 		end
-	end
+	end]]
 end
 
 function GM:PlayerUsedOffensiveSpell(pl, spelltab, projectile, hitentity)
-	if spelltab.SkillRequirements and gamemode.Call("PlayerShouldSkillUp", pl, hitentity) then
+	--[[if spelltab.SkillRequirements and gamemode.Call("PlayerShouldSkillUp", pl, hitentity) then
 		for skillid, amount in pairs(spelltab.SkillRequirements) do
 			hook.Call("PlayerUseSkill", GAMEMODE, pl, skillid, (amount * SKILLS_RMAX + pl:GetHostileSkillUpDifficulty(pl)) / 2)
 		end
-	end
+	end]]
 end
 
 function GM:PlayerSkillUp(pl, skillid, difficulty)
-	local skillgroup = SKILLS[skillid].Group
+	--[[local skillgroup = SKILLS[skillid].Group
 	local curskill = pl:GetSkill(skillid)
 	local room = math.huge
 	if skillgroup and SKILLGROUPMAX[skillgroup] then
@@ -1006,7 +1008,7 @@ function GM:PlayerSkillUp(pl, skillid, difficulty)
 	end
 
 	pl:SetSkill(skillid, math.min(SKILLS_MAX, curskill + math.min(room, self:GetSkillInterval(curskill))))
-	pl:SendMessage(string.format("Your %s skill has increased to %.1f!", SKILLS[skillid].Name, pl.Skills[skillid]), "COLOR_LIMEGREEN", true)
+	pl:SendMessage(string.format("Your %s skill has increased to %.1f!", SKILLS[skillid].Name, pl.Skills[skillid]), "COLOR_LIMEGREEN", true)]]
 end
 
 function GM:OnEnterZone(zoneent, ent)

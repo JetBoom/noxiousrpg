@@ -183,9 +183,9 @@ function meta:GenericMeleeHit(ent, damage, damagetype, hitdata, ...)
 		ent:CallCastSpellEnchantments(SPELLENCHANT_EFFECT_ONSTRUCK, nil, self.Owner)
 	end
 
-	if self.Skill and ent.TotalSkill and gamemode.Call("PlayerShouldSkillUp", self.Owner, ent) then
+	--[[if self.Skill and ent.TotalSkill and gamemode.Call("PlayerShouldSkillUp", self.Owner, ent) then
 		gamemode.Call("PlayerUseSkill", self.Owner, self.Skill, self.Owner:GetHostileSkillUpDifficulty(ent))
-	end
+	end]]
 end
 
 function meta:GenericMeleeGuard(attacker, wep, damage, damagetype, hitdata, ...)

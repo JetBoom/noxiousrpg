@@ -178,7 +178,7 @@ function SWEP:LaunchArrow(dontshoot)
 		ent:SetCharge(charge)
 		owner:GlobalHook("PlayerCreatedArrowProjectile", ent, self)
 
-		local variance = (SKILLS_MAX - owner:GetSkill(SKILL_BOWS)) * SKILLS_RMAX
+		local variance = (SKILLS_MAX - owner:GetSkill(SKILL_ARCHERY)) * SKILLS_RMAX
 		if variance > 0 then
 			ang:RotateAroundAxis(ang:Up(), variance * math.Rand(-4, 4))
 			ang:RotateAroundAxis(ang:Right(), variance * math.Rand(-4, 4))

@@ -421,7 +421,6 @@ GUILDATTITUDE_DEFAULT = GUILDATTITUDE_NEUTRAL
 
 MOUSE_TRACEDISTANCE = 1024
 
-SKILLS_DEFAULT = 0
 SKILLS_FAILUREMULTIPLIER = 0.25
 SKILLS_MAX = 100
 SKILLS_RMAX = 1 / SKILLS_MAX
@@ -433,69 +432,59 @@ SKILLS_STARTINGSKILLAMOUNT = 30
 SKILL_STRENGTH = 1
 SKILL_VITALITY = 2
 SKILL_DEXTERITY = 3
-SKILL_ENDURANCE = SKILL_DEXTERITY
---SKILL_STAMINA = SKILL_DEXTERITY
 SKILL_INTELLIGENCE = 4
-SKILL_MANA = SKILL_INTELLIGENCE
 SKILL_BLADES = 5
-SKILL_SWORDS = SKILL_BLADES
-SKILL_SWORDSMANSHIP = SKILL_BLADES
 SKILL_POLEARMS = 6
-SKILL_POLEARM = SKILL_POLEARMS
 SKILL_BLUDGEONING = 7
-SKILL_MACING = SKILL_BLUDGEONING
-SKILL_MACES = SKILL_BLUDGEONING
 SKILL_ARCHERY = 8
-SKILL_BOWS = SKILL_ARCHERY
-SKILL_BOW = SKILL_BOWS
 SKILL_ARCANEMAGIC = 9
 SKILL_ENTROPICMAGIC = 10
-SKILL_ENTROPY = SKILL_ENTROPICMAGIC
 SKILL_AEROMAGIC = 11
 SKILL_VOIDMAGIC = 12
 SKILL_HEALING = 13
 --[[SKILL_LUMBERJACKING = 14
-SKILL_CHOPPING = SKILL_LUMBERJACKING
 SKILL_MINING = 15
 SKILL_ALCHEMY = 16
-SKILL_POTIONS = SKILL_ALCHEMY
-SKILL_SMITHING = 17
-SKILL_BLACKSMITHING = SKILL_SMITHING]]
+SKILL_SMITHING = 17]]
 
 SKILLGROUP_ATTRIBUTES = 1
 SKILLGROUP_MAJOR = 2
 SKILLGROUP_MINOR = 3
 
-SKILLGROUPS = {}
-SKILLGROUPS[SKILLGROUP_ATTRIBUTES] = "Attributes"
-SKILLGROUPS[SKILLGROUP_MAJOR] = "Major"
-SKILLGROUPS[SKILLGROUP_MINOR] = "Minor"
+SKILLGROUPS = {
+	[SKILLGROUP_ATTRIBUTES] = "Attributes",
+	[SKILLGROUP_MAJOR] = "Major",
+	[SKILLGROUP_MINOR] = "Minor"
+}
 
-SKILLGROUPMAX = {}
-SKILLGROUPMAX[SKILLGROUP_ATTRIBUTES] = 300
-SKILLGROUPMAX[SKILLGROUP_MAJOR] = 400
-SKILLGROUPMAX[SKILLGROUP_MINOR] = 400
+--[[SKILLGROUPMAX = {
+	[SKILLGROUP_ATTRIBUTES] = 300,
+	[SKILLGROUP_MAJOR] = 400,
+	[SKILLGROUP_MINOR] = 400
+}]]
 
-SKILLS = {}
-SKILLS[SKILL_STRENGTH] = {Name = "Strength", Description = "Determines how much you can carry. Effects archery shooting power, weapon damage, and a small amount of your maximum health.", Default = 20, Group = SKILLGROUP_ATTRIBUTES}
-SKILLS[SKILL_VITALITY] = {Name = "Vitality", Description = "Greatly effects maximum health.", Default = 10, Group = SKILLGROUP_ATTRIBUTES}
-SKILLS[SKILL_DEXTERITY] = {Name = "Dexterity", Description = "Determines quickness and agility. Effects archery accuracy, movement speed, and jumping ability.", Default = 10, Group = SKILLGROUP_ATTRIBUTES}
-SKILLS[SKILL_INTELLIGENCE] = {Name = "Intelligence", Description = "Determines maximum mana and has an effect on things like crafting.", Default = 10, Group = SKILLGROUP_ATTRIBUTES}
+SKILLS = {
+	[SKILL_STRENGTH] = {Name = "Strength", Description = "Increases weight capacity, archery shooting power, and melee weapon damage.", Default = 1, Group = SKILLGROUP_ATTRIBUTES},
+	[SKILL_VITALITY] = {Name = "Vitality", Description = "Increases maximum health.", Default = 1, Group = SKILLGROUP_ATTRIBUTES},
+	[SKILL_DEXTERITY] = {Name = "Dexterity", Description = "Increases archery draw speed, movement speed, and jumping power.", Default = 1, Group = SKILLGROUP_ATTRIBUTES},
+	[SKILL_INTELLIGENCE] = {Name = "Intelligence", Description = "Increases the power of magic spells and grants a small amount of mana.", Default = 1, Group = SKILLGROUP_ATTRIBUTES},
+	[SKILL_ENERGY] = {Name = "Energy", Description = "Increases maximum mana.", Default = 1, Group = SKILLGROUP_ATTRIBUTES},
 
-SKILLS[SKILL_BLADES] = {Name = "Blade Proficiency", Description = "Skill with bladed weapons such as swords, axes, and other cutting weapons.", Supplements = {[SKILL_STRENGTH] = 0.25, [SKILL_DEXTERITY] = 0.25}, Default = SKILLS_DEFAULT, Group = SKILLGROUP_MAJOR}
-SKILLS[SKILL_POLEARMS] = {Name = "Polearm Proficiency", Description = "Skill with polearms such as spears, halberds, and pikes.", Supplements = {[SKILL_STRENGTH] = 0.4, [SKILL_DEXTERITY] = 0.1}, Default = SKILLS_DEFAULT, Group = SKILLGROUP_MAJOR}
-SKILLS[SKILL_BLUDGEONING] = {Name = "Mace Proficiency", Description = "Skill with blunt weapons such as hammers and clubs.", Supplements = {[SKILL_STRENGTH] = 0.5}, Default = SKILLS_DEFAULT, Group = SKILLGROUP_MAJOR}
-SKILLS[SKILL_ARCHERY] = {Name = "Archery", Description = "Skill with bows and string-drawn weapons. Increases accuracy.", Supplements = {[SKILL_STRENGTH] = 0.3, [SKILL_DEXTERITY] = 0.5}, Default = SKILLS_DEFAULT, Group = SKILLGROUP_MAJOR}
-SKILLS[SKILL_HEALING] = {Name = "Healing", Description = "Skill with using bandages, potions and other surgical or magical things used to maintain life.", Supplements = {[SKILL_INTELLIGENCE] = 0.25, [SKILL_DEXTERITY] = 0.2}, Default = SKILLS_DEFAULT, Group = SKILLGROUP_MAJOR}
-SKILLS[SKILL_ARCANEMAGIC] = {Name = "Arcane Magic", Description = "Skill with Arcane magic, the magic of suggestive illusion.", Supplements = {[SKILL_INTELLIGENCE] = 0.25}, Default = SKILLS_DEFAULT, Group = SKILLGROUP_MAJOR}
-SKILLS[SKILL_ENTROPICMAGIC] = {Name = "Entropic Magic", Description = "Skill with Entropic magic, the magic of manipulating energy.", Supplements = {[SKILL_INTELLIGENCE] = 0.5}, Group = SKILLGROUP_MAJOR}
-SKILLS[SKILL_AEROMAGIC] = {Name = "Aero Magic", Description = "Skill with Aero magic, the magic of manipulating the natural state, structure, or chemistry of the environment.", Supplements = {[SKILL_INTELLIGENCE] = 0.5}, Group = SKILLGROUP_MAJOR}
-SKILLS[SKILL_VOIDMAGIC] = {Name = "Void Magic", Description = "Skill with Void magic, the magic of bending or altering the natural physical laws.", Supplements = {[SKILL_INTELLIGENCE] = 0.5}, Default = SKILLS_DEFAULT, Group = SKILLGROUP_MAJOR}
+	[SKILL_BLADES] = {Name = "Blade Proficiency", Description = "Increases damage with bladed weapons such as swords, axes, and other cutting weapons.", Group = SKILLGROUP_MAJOR},
+	[SKILL_POLEARMS] = {Name = "Polearm Proficiency", Description = "Increases damage with polearms such as spears, halberds, and pikes.", Group = SKILLGROUP_MAJOR},
+	[SKILL_BLUDGEONING] = {Name = "Mace Proficiency", Description = "Increases damage with blunt weapons such as hammers and clubs.", Group = SKILLGROUP_MAJOR},
+	[SKILL_ARCHERY] = {Name = "Archery", Description = "Increases damage with bows and other string-drawn weapons.", Group = SKILLGROUP_MAJOR},
+	[SKILL_HEALING] = {Name = "Healing", Description = "Increases the effectiveness of bandages, potions and other surgical instruments.", Group = SKILLGROUP_MAJOR},
+	[SKILL_ARCANEMAGIC] = {Name = "Arcane Magic", Description = "Skill with Arcane magic, the magic of suggestive illusion.", Group = SKILLGROUP_MAJOR},
+	[SKILL_ENTROPICMAGIC] = {Name = "Entropic Magic", Description = "Skill with Entropic magic, the magic of manipulating energy.", Group = SKILLGROUP_MAJOR},
+	[SKILL_AEROMAGIC] = {Name = "Aero Magic", Description = "Skill with Aero magic, the magic of manipulating the natural state, structure, or chemistry of the environment.", Group = SKILLGROUP_MAJOR},
+	[SKILL_VOIDMAGIC] = {Name = "Void Magic", Description = "Skill with Void magic, the magic of bending or altering the natural physical laws.", Group = SKILLGROUP_MAJOR},
 
---[[SKILLS[SKILL_LUMBERJACKING] = {Name = "Lumberjacking", Description = "Skill with harvesting wood from trees. Grants a small damage bonus to axes.", Supplements = {[SKILL_STRENGTH] = 0.5}, Default = SKILLS_DEFAULT, Group = SKILLGROUP_MINOR}
-SKILLS[SKILL_MINING] = {Name = "Mining", Description = "Skill with picks and harvesting ore, gems, minerals, and stone.", Supplements = {[SKILL_STRENGTH] = 0.5}, Default = SKILLS_DEFAULT, Group = SKILLGROUP_MINOR}
-SKILLS[SKILL_ALCHEMY] = {Name = "Alchemy", Description = "Knowledge of creating potions from herbs and other ingredients.", Supplements = {[SKILL_INTELLIGENCE] = 0.5}, Default = SKILL_DEFAULT, Group = SKILLGROUP_MINOR}
-SKILLS[SKILL_SMITHING] = {Name = "Smithing", Description = "Knowledge of forging weapons, armor and other metal-based constructs.", Supplements = {[SKILL_STRENGTH] = 0.3, [SKILL_DEXTERITY] = 0.3, [SKILL_INTELLIGENCE] = 0.1}, Default = SKILL_DEFAULT, Group = SKILLGROUP_MINOR}]]
+	--[[[SKILL_LUMBERJACKING] = {Name = "Lumberjacking", Description = "Skill with harvesting wood from trees. Grants a small damage bonus to axes.", Group = SKILLGROUP_MINOR},
+	[SKILL_MINING] = {Name = "Mining", Description = "Skill with picks and harvesting ore, gems, minerals, and stone.", Group = SKILLGROUP_MINOR},
+	[SKILL_ALCHEMY] = {Name = "Alchemy", Description = "Knowledge of creating potions from herbs and other ingredients.", Group = SKILLGROUP_MINOR},
+	[SKILL_SMITHING] = {Name = "Smithing", Description = "Knowledge of forging weapons, armor and other metal-based constructs.", Group = SKILLGROUP_MINOR}]]
+}
 
 SKILLS_NUMBEROFSKILLS = table.Count(SKILLS)
 
@@ -630,23 +619,23 @@ for dt, name in pairs(DAMAGETYPES) do
 end
 
 ITEMDESCRIPTIONS_MEMBERS = {
-{"Attack power", "BaseDamage"},
-{"Swing duration", "SwingTime"}
+	{"Attack power", "BaseDamage"},
+	{"Swing duration", "SwingTime"}
 }
 
 ITEMDESCRIPTIONS_MULTIPLIER = {
-{"Projectile damage", "ProjectileDamageMultiplier"},
-{"Projectile radius", "ProjectileRadiusMultiplier"},
-{"Projectile force", "ProjectileForceMultiplier"},
-{"Projectile speed", "ProjectileSpeedMultiplier"},
-{"Melee damage", "MeleeDamageMultiplier"},
-{"Draw time", "DrawTimeMultiplier"},
-{"Charge speed", "ChargeMultiplier"},
-{"Casting recovery time", "CastRecoveryTimeMultiplier"},
-{"Casting time", "CastTimeMultiplier"},
-{"Damage taken", "DamageMultiplier"},
-{"Instability", "ThrownForceMultiplier"},
-{"Swing duration", "SwingTimeMultiplier"}
+	{"Projectile damage", "ProjectileDamageMultiplier"},
+	{"Projectile radius", "ProjectileRadiusMultiplier"},
+	{"Projectile force", "ProjectileForceMultiplier"},
+	{"Projectile speed", "ProjectileSpeedMultiplier"},
+	{"Melee damage", "MeleeDamageMultiplier"},
+	{"Draw time", "DrawTimeMultiplier"},
+	{"Charge speed", "ChargeMultiplier"},
+	{"Casting recovery time", "CastRecoveryTimeMultiplier"},
+	{"Casting time", "CastTimeMultiplier"},
+	{"Damage taken", "DamageMultiplier"},
+	{"Instability", "ThrownForceMultiplier"},
+	{"Swing duration", "SwingTimeMultiplier"}
 }
 
 SOUND_MURDER = Sound("npc/manhack/grind_flesh1.wav")
