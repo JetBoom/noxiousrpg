@@ -68,7 +68,6 @@ function MakepContainer(container)
 	local cwid, chei = wid - 16, hei - 80
 	containerpanel:SetSize(cwid, chei)
 	containerpanel:SetContainer(container)
-	window.Container = containerpanel
 
 	--window:MakePopup()
 	window:SetVisible(true)

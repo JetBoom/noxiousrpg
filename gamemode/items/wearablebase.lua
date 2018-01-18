@@ -1,3 +1,5 @@
+ITEM.DataIndex = 54
+
 ITEM.Name = "wearable"
 ITEM.Model = Model("models/Weapons/w_suitcase_passenger.mdl")
 ITEM.Mass = 1

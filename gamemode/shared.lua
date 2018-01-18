@@ -169,8 +169,6 @@ function GM:Move(pl, move)
 		pl:SetGroundEntity(NULL)
 	end
 
-	if pl:CallMonsterFunction("Move", move) then return end
-
 	if pl:IsFrozen() then -- Soft frozen?
 		move:SetMaxSpeed(0)
 		move:SetMaxClientSpeed(0)
@@ -257,9 +255,7 @@ function GM:ShouldCollide(enta, entb)
 end
 
 function GM:PlayerSkillChanged(pl, skillid, amount)
-	if not pl:IsMonster() then
-		pl:OnSkillChanged(skillid, amount)
-	end
+	pl:OnSkillChanged(skillid, amount)
 end
 
 function GM:PlayerStepSoundTime(pl, iType, bWalking)
@@ -272,17 +268,15 @@ function GM:PlayerStepSoundTime(pl, iType, bWalking)
 		amount = 350
 	end
 
-	return pl:CallMonsterFunction("PlayerStepSoundTime", iType, bWalking, amount) or amount
+	return amount
 end
 
 function GM:GetFallDamage(pl, fallspeed)
-	--[[local damage = pl:StatusWeaponHook1("GetFallDamage", fallspeed) or fallspeed * 0.04
-	return pl:CallMonsterFunction("AlterFallDamage", damage, fallspeed) or damage]]
 	return 0
 end
 
 function GM:OnPlayerHitGround(pl, inwater, hitfloater, speed)
-	if pl:IsGhost() or pl:StatusWeaponHook3("OnPlayerHitGround", inwater, hitfloater, speed) or pl:CallMonsterFunction("OnPlayerHitGround", inwater, hitfloater, fallspeed) then return true end
+	if pl:IsGhost() or pl:StatusWeaponHook3("OnPlayerHitGround", inwater, hitfloater, speed) then return true end
 
 	if SERVER then
 		local damage = (0.03 * (speed - 550)) ^ 1.5

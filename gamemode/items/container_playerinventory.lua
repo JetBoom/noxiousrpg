@@ -1,3 +1,5 @@
+ITEM.DataIndex = 14
+
 ITEM.Base = "container_base"
 ITEM.Model = "models/error.mdl"
 

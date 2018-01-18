@@ -144,10 +144,8 @@ function meta:ToggleSkills()
 end
 
 function meta:SecondTick()
-	if not self:CallMonsterFunction("SecondTick") then
-		self:HealthRegeneration()
-		self:CheckDrowning()
-	end
+	self:HealthRegeneration()
+	self:CheckDrowning()
 end
 
 local function CreateRagdoll(pl)
@@ -292,52 +290,6 @@ function meta:UpdateMonsterClass(filter)
 	self:SetMonsterClass(self:GetMonsterClass(), true, filter)
 end
 
-function meta:ChangeToHuman()
-	if not self:IsMonster() then return end
-
-	local tab = {}
-	self:InsertRPGData(tab)
-	self.MonsterData = tab
-
-	self:StripWeapons()
-	self:SetTeam(TEAM_HUMAN)
-	--self:RefreshGuild()
-
-	if self.RPGHumanData then
-		gamemode.Call("PlayerInitialSpawnBasedOn", self, self.RPGHumanData)
-		--self.RPGHumanData = nil
-	end
-
-	timer.Simple(0.25, function() self:ForceRespawn(true) end)
-
-	NDB.SaveInfo(self)
-end
-
-function meta:ChangeToMonster()
-	if self:IsMonster() then return end
-
-	local tab = {}
-	self:InsertRPGData(tab)
-	self.RPGHumanData = tab
-
-	self:StripWeapons()
-	self:GuildNoLongerPlaying()
-	self:SetTeam(TEAM_MONSTER)
-
-	if self.MonsterData then
-		gamemode.Call("PlayerInitialSpawnBasedOn", self, self.MonsterData)
-		--self.MonsterData = nil
-	end
-
-	if self:GetMonsterClassTable() == nil then
-		self:SetMonsterClass(1)
-	end
-
-	timer.Simple(0.25, function() self.ForceRespawn(true) end)
-
-	NDB.SaveInfo(self)
-end
-
 function meta:GuildNoLongerPlaying()
 	local guildid = self:GetGuildID()
 	if guildid ~= 0 then
@@ -346,8 +298,6 @@ function meta:GuildNoLongerPlaying()
 end
 
 function meta:RefreshGuild()
-	if self:IsMonster() then return end
-
 	if self.RPGGuildUID then
 		for _, guild in pairs(GetAllGuilds()) do
 			if guild.UID == self.RPGGuildUID then
@@ -466,7 +416,7 @@ function meta:HostileAction(pl)
 	end
 	pl:SetLastAttacker(self)
 
-	if pl:IsMonster() or self:IsMonster() or self:IsInSameGuild(pl) or pl:IsGuildEnemy(self) then return end
+	if self:IsInSameGuild(pl) or pl:IsGuildEnemy(self) then return end
 
 	if pl:IsCriminal() then
 		pl:CapCriminal(CurTime() + CRIMINAL_ATTACKED)
@@ -479,11 +429,9 @@ end
 meta.HarmfulAction = meta.HostileAction
 
 function meta:BeneficialAction(pl)
-	if not pl or pl == self or not pl:IsValid() or not pl:IsPlayerCharacter() or self:IsMonster() then return end
+	if not pl or pl == self or not pl:IsValid() or not pl:IsPlayerCharacter() then return end
 
-	if pl:IsMonster() then
-		self:CapCriminal(CurTime() + CRIMINAL_HELPMONSTER)
-	elseif pl:IsCriminal() and not self:IsInSameGuild(pl) then
+	if pl:IsCriminal() and not self:IsInSameGuild(pl) then
 		self:CapCriminal(CurTime() + CRIMINAL_HELPCRIMINAL)
 	end
 end
@@ -711,8 +659,6 @@ function meta:CreateGib(gibtype)
 end
 
 function meta:CreateGibs()
-	if self:CallMonsterFunction("CreateGibs") then return end
-
 	local gibs = {
 		self:CreateGib("humanhead"),
 		self:CreateGib("humantorso"),
@@ -744,8 +690,6 @@ end
 function meta:Gib(dmginfo)
 	local ragdoll = self:GetRagdollEntity()
 	if ragdoll and ragdoll:IsValid() then ragdoll:Remove() end
-
-	if self:CallMonsterFunction("Gib", dmginfo) then return end
 
 	local effectdata = EffectData()
 		effectdata:SetEntity(self)

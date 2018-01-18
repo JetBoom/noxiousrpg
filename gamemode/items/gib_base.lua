@@ -1,3 +1,5 @@
+ITEM.DataIndex = 17
+
 ITEM.DecayTime = GIB_DECAYTIME
 ITEM.PhysMaterial = "flesh"
 

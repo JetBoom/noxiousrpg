@@ -49,16 +49,16 @@ function RegisterBodyArmor(name, itemtab)
 	return RegisterItemWearableStatus(name, itemtab, false)
 end
 
-function GetItemData(dataname, copy)
+function GetItemData(dataindex, copy)
 	if copy then
-		return table.CopyNoUserdata(items[dataname])
+		return table.CopyNoUserdata(items[dataindex])
 	end
 
-	return items[dataname]
+	return items[dataindex]
 end
 ItemData = GetItemData
 
-function RegisterItem(dataname, itemdata, basedata)
+function RegisterItem(dataname, dataindex, itemdata, basedata)
 	if basedata then
 		itemdata = itemdata or {}
 		for k, v in pairs(basedata) do
@@ -68,8 +68,11 @@ function RegisterItem(dataname, itemdata, basedata)
 		end
 		--itemdata.BaseClass = basedata.ItemData --itemdata.BaseClass = basedata
 	end
+
+	items[dataindex] = itemdata
 	items[dataname] = itemdata
-	_G["ITEM_"..string.upper(dataname)] = itemdata
+
+	_G["ITEM_"..string.upper(dataname)] = dataindex
 end
 
 local function GenericItemEntityInitialize(self)
@@ -162,7 +165,28 @@ local function ContextScreenClick(self, aimvec, mc, pressed, pl, tr, camerapos)
 	end
 end
 
+local function onreceive_parent(item, oldvalue)
+	-- hack to call SetParent properly
+	local newvalue = item.Parent
+	item.Parent = oldvalue
+	item:SetParent(newvalue)
+end
+
+local function onreceive_slot(item, oldvalue)
+	local curparent = item:GetParent()
+	if parent and parent.IsContainer and parent.OnContentsChanged then
+		parent:OnContentsChanged(item)
+	end
+end
+
 local function Register()
+	if not ITEM.DataIndex then
+		ErrorNoHalt(string.format("WARNING - Item %s does not have a unique ITEM.DataIndex!!!", ITEMNAME))
+		ITEM.DataIndex = 65534
+	end
+
+	ITEM.__nwvars = {}
+
 	ITEM.DataName = ITEMNAME
 	ITEM.Mass = ITEM.Mass or 1
 	ITEM.Name = ITEM.Name or string.gsub(ITEMNAME, "_", " ")
@@ -170,7 +194,15 @@ local function Register()
 	ENT.Type = ENT.Type or "anim"
 
 	if ITEM.MaxStack == nil then
-		ITEM.MaxStack = ITEM_MAXSTACK_DEFAULT
+		ITEM.MaxStack = 1
+	end
+
+	ITEM_NW_VAR("ContainerSlot", "UInt", 0, 8, onreceive_slot)
+	ITEM_NW_VAR("Parent", "UInt", 0, 32, onreceive_parent)
+	ITEM_NW_VAR("Mass", "UInt", ITEM.Mass, 8) -- Nothing should be heavier than 255
+
+	if ITEM.MaxStack > 1 then
+		ITEM_NW_VAR("Amount", "UInt", 1, math.ceil(math.log(ITEM.MaxStack, 2) + 1)) -- Automatically uses only enough bits to represent the max stack.
 	end
 
 	if SERVER then
@@ -181,7 +213,7 @@ local function Register()
 		ENT.ContextScreenClick = ENT.ContextScreenClick or ContextScreenClick
 	end
 
-	RegisterItem(ITEMNAME, ITEM, items[ITEM.Base])
+	RegisterItem(ITEMNAME, ITEM.DataIndex, ITEM, items[ITEM.Base])
 	if ITEM.Base then
 		ENT.Base = "item_"..ITEM.Base
 	end

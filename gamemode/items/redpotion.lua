@@ -1,3 +1,5 @@
+ITEM.DataIndex = 32
+
 ITEM.Name = "red potion"
 ITEM.Model = Model("models/items/provisions/potions/life_potion.mdl")
 ITEM.Mass = 6

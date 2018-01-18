@@ -1,3 +1,5 @@
+ITEM.DataIndex = 11
+
 ITEM.Base = "container_base"
 ITEM.Name = "secure bank"
 ITEM.Moveable = false

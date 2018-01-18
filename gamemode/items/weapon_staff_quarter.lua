@@ -1,3 +1,5 @@
+ITEM.DataIndex = 43
+
 ITEM.Base = "weaponbase"
 
 ITEM.Name = "quarter staff"

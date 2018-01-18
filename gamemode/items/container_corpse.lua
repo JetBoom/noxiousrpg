@@ -1,3 +1,5 @@
+ITEM.DataIndex = 13
+
 ITEM.Base = "container_base"
 ITEM.Name = "corpse"
 ITEM.Model = "models/zombie/classic.mdl"

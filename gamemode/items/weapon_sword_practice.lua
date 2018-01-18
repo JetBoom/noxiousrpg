@@ -1,3 +1,5 @@
+ITEM.DataIndex = 47
+
 ITEM.Base = "weaponbase"
 
 ITEM.Name = "practice sword"

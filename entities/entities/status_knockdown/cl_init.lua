@@ -8,13 +8,10 @@ function ENT:OnInitialize()
 	local owner = self:GetOwner()
 	if owner:IsValid() then
 		owner.KnockedDown = self
-		if not owner:CallMonsterFunction("KnockDownShouldDraw", self) then
-			owner:SetNoDraw(true)
-		end
+		owner:SetNoDraw(true)
 		owner:SoftFreeze(true)
 
 		owner:StatusWeaponHook3("PlayerKnockedDown", self, false, self:GetEndTime())
-		owner:CallMonsterFunction("PlayerKnockedDown", self, false, self:GetEndTime())
 	end
 end
 

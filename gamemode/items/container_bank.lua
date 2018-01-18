@@ -1,3 +1,5 @@
+ITEM.DataIndex = 10
+
 -- The way this works is actually pretty simple.
 -- When the player uses this item, an invisible container is created on top of us.
 -- The player's Bank[zoneid] contents are then copied on to the container. If a virtual container already exists with the player's bank then it won't be allowed.

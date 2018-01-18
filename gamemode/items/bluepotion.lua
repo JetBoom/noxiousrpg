@@ -1,3 +1,5 @@
+ITEM.DataIndex = 7
+
 ITEM.Name = "blue potion"
 ITEM.Model = Model("models/items/provisions/potions/life_potion.mdl")
 ITEM.Color = Color(0, 100, 255, 255)

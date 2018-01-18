@@ -1,3 +1,5 @@
+ITEM.DataIndex = 19
+
 ITEM.Model = Model("models/nayrbarr/coin/coin.mdl")
 ITEM.Mass = 0.05
 ITEM.MaxStack = -1

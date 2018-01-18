@@ -116,7 +116,7 @@ function SWEP:PrimaryAttack()
 		util.Decal("Impact.Concrete", tr.HitPos + tr.HitNormal, tr.HitPos - tr.HitNormal)
 
 		if SERVER and hitent:IsValid() then
-			if hitent:IsPlayer() and not hitent:IsMonster() and damage >= hitent:Health() then
+			if hitent:IsPlayer() and damage >= hitent:Health() then
 				if not hitent.FistStunImmunity or CurTime() > hitent.FistStunImmunity then
 					hitent:Stun(5)
 					hitent:KnockDown(5)

@@ -1,3 +1,5 @@
+ITEM.DataIndex = 29
+
 ITEM.Name = "potion"
 ITEM.Model = Model("models/props_junk/garbage_glassbottle003a.mdl")
 ITEM.Mass = 1

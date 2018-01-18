@@ -1,3 +1,5 @@
+ITEM.DataIndex = 50
+
 ITEM.Base = "wearablebase"
 
 ITEM.Name = "chain armor set"

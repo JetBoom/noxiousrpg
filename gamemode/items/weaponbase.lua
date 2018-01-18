@@ -1,3 +1,5 @@
+ITEM.DataIndex = 49
+
 ITEM.Name = "weapon"
 ITEM.Model = Model("models/weapons/w_pistol.mdl")
 ITEM.Mass = 20

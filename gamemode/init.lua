@@ -694,7 +694,7 @@ function GM:ShowHelp(pl)
 end
 
 function GM:ShowTeam(pl)
-	if pl:Alive() and (not pl:IsMonster() or pl:ImplicitCallMonsterFunction("CanSeeSkills")) then
+	if pl:Alive() then
 		pl:ToggleSkills()
 	end
 end
@@ -704,7 +704,7 @@ function GM:ShowSpare1(pl)
 end
 
 function GM:ShowSpare2(pl)
-	if pl:Alive() and (not pl:IsMonster() or pl:ImplicitCallMonsterFunction("CanUseInventory")) then
+	if pl:Alive() then
 		pl:ToggleInventory()
 	end
 end
@@ -735,7 +735,7 @@ function GM:PlayerDeath2(Victim, Inflictor, Attacker)
 	if Attacker == Victim then
 		Victim:SendMessage("You killed yourself!", "COLOR_RED")
 	elseif Attacker:IsPlayer() then
-		if Victim:IsMonster() or Attacker:IsMonster() then
+		if Victim:IsNPC() or Attacker:IsNPC() then
 			Attacker:SendMessage("You killed "..Victim:RPGName(Attacker).."!~s"..SOUND_KILL_MONSTER)
 			Victim:SendMessage("You were killed by "..Attacker:RPGName(Victim).."!~s"..SOUND_KILLED_MONSTER, "COLOR_RED")
 		elseif Attacker:IsInSameGuild(Victim) then
@@ -781,12 +781,6 @@ function GM:DelayFeed(pl)
 		pl:UpdateSkills()
 		pl:UpdateInventory()
 
-		for _, p in pairs(player.GetAll()) do
-			if p:IsMonster() then
-				p:UpdateMonsterClass(pl)
-			end
-		end
-
 		UpdateAllActiveGuilds(pl)
 	end
 end
@@ -825,7 +819,6 @@ end
 function GM:PlayerDisconnected(pl)
 	if pl:IsValid() then
 		pl:GuildNoLongerPlaying()
-		pl:CallMonsterFunction("PlayerDisconnected")
 
 		self:SaveAccount(pl)
 
@@ -902,27 +895,17 @@ function GM:PlayerInitialSpawnBasedOn(pl, tab, isfirstspawn)
 
 	--tab.Map
 
-	if tab.RPGIsMonster or pl:IsMonster() then
-		pl:GuildNoLongerPlaying()
-		pl:SetTeam(TEAM_MONSTER)
-		pl:SetMonsterClass(tab.MonsterClass or 1)
-		pl:SetGhost(false)
-		if isfirstspawn then
-			timer.Simple(0.1, function() pl:UpdateMonsterClass() end)
-		end
+	pl:SetTeam(TEAM_HUMAN)
+
+	if tab.IsDead then
+		pl:SetGhost(true)
 	else
-		pl:SetTeam(TEAM_HUMAN)
+		self:GiveStartingGear(pl)
 
-		if tab.IsDead then
-			pl:SetGhost(true)
-		else
-			self:GiveStartingGear(pl)
-
-			pl:EquipAllByUIDs(tab.EquippedUIDs, true, true)
-		end
-
-		pl:RefreshGuild()
+		pl:EquipAllByUIDs(tab.EquippedUIDs, true, true)
 	end
+
+	pl:RefreshGuild()
 
 	if tab.Position then
 		pl:SetPos(tab.Position)
@@ -943,9 +926,7 @@ function GM:PlayerInitialSpawnBasedOn(pl, tab, isfirstspawn)
 		pl:SetMana(tab.Mana)
 	end
 
-	if not pl:IsMonster() then
-		pl.Banks = pl.Banks or tab.Banks or {}
-	end
+	pl.Banks = pl.Banks or tab.Banks or {}
 
 	if tab.ShortTermMurders then
 		pl:SetShortTermMurders(tab.ShortTermMurders)
@@ -964,8 +945,6 @@ function GM:PlayerCastedSpell(pl, spelltab, target, attacker)
 			hook.Call("PlayerUseSkill", GAMEMODE, pl, skillid, amount * SKILLS_RMAX)
 		end
 	end]]
-
-	pl:CallMonsterFunction("PlayerCastedSpell", spelltab, target, attacker)
 end
 
 function GM:PlayerUseSkill(pl, skillid, difficulty, failed)
@@ -1026,8 +1005,6 @@ function GM:OnEnterZone(zoneent, ent)
 		if ent:IsMurderer() then
 			ent:Retribution()
 		end
-
-		ent:CallMonsterFunction("OnEnterZone", zoneent)
 	end
 end
 
@@ -1042,8 +1019,6 @@ function GM:OnLeaveZone(zoneent, ent)
 			end
 
 			ent:Retribution()
-
-			ent:CallMonsterFunction("OnExitZone", zoneent)
 		end
 	end
 
@@ -1068,23 +1043,17 @@ function GM:PlayerSpawn(pl)
 		pl.ChangedGravity = nil
 	end
 
-	if pl:IsMonster() then
-		if not pl:ImplicitCallMonsterFunction("PlayerSpawn") then
-			pl:ResetData(pl:GetMonsterClassTable())
-		end
-	else
-		pl:ResetData()
+	pl:ResetData()
 
-		for skillid in pairs(SKILLS) do
-			gamemode.Call("PlayerSkillChanged", pl, skillid, pl:GetSkill(skillid))
-		end
+	for skillid in pairs(SKILLS) do
+		gamemode.Call("PlayerSkillChanged", pl, skillid, pl:GetSkill(skillid))
+	end
 
-		pl:RefreshPlayerModel()
-		pl:RefreshVoiceSet()
+	pl:RefreshPlayerModel()
+	pl:RefreshVoiceSet()
 
-		if not pl:IsGhost() and not pl:GetActiveWeapon():IsValid() then
-			pl:Give("weapon_hands")
-		end
+	if not pl:IsGhost() and not pl:GetActiveWeapon():IsValid() then
+		pl:Give("weapon_hands")
 	end
 
 	pl:SetHealth(math.min(pl:Health(), pl:GetMaxHealth()))
@@ -1152,7 +1121,7 @@ function GM:PlayerUseWearable(pl, item, onlyputon, silent)
 			end
 		end
 
-		local status = pl:GiveStatus(item._D)
+		local status = pl:GiveStatus(item.DataName)
 		if status and status:IsValid() then
 			status:SetItem(item)
 
@@ -1217,8 +1186,6 @@ concommand.Add("rpg_test_printmyskills_server", function(sender, command, argume
 end)
 
 concommand.Add("rpg_pickupitem", function(sender, command, arguments)
-	if sender:IsMonster() then return end
-
 	local id = tonumber(arguments[1])
 	if not id then return end
 	local ent = Entity(id)
@@ -1301,7 +1268,7 @@ concommand.Add("rpg_dropitem", function(sender, command, arguments)
 end)
 
 concommand.Add("rpg_requestinventory", function(sender, command, arguments)
-	if sender:IsMonster() or not sender:Alive() then return end
+	if not sender:Alive() then return end
 
 	local index = tonumber(arguments[1])
 	if not index then return end

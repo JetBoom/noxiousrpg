@@ -1,13 +1,17 @@
+ITEM.DataIndex = 12
+
 ITEM.Name = "container"
 ITEM.Model = Model("models/props_junk/wood_crate001a.mdl")
 ITEM.Mass = 15
 ITEM.MaxStack = 1
 ITEM.ItemCapacity = 30
 
+ITEM.IsContainer = true
+
 if SERVER then
-	function ITEM:OnCreated()
+	--[[function ITEM:OnCreated()
 		self.Container = {}
-	end
+	end]]
 
 	function ITEM:OnUse(pl)
 	end

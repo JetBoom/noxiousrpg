@@ -1,3 +1,5 @@
+ITEM.DataIndex = 15
+
 ITEM.Base = "container_base"
 ITEM.Name = "small crate"
 ITEM.Model = Model("models/props_junk/wood_crate001a.mdl")

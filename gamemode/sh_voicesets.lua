@@ -169,8 +169,6 @@ local meta = FindMetaTable("Player")
 if not meta then return end
 
 function meta:PlayVoiceGroup(group)
-	if self:CallMonsterFunction("PlayVoiceGroup", group) then return end
-
 	local voiceset = self.VoiceSet
 	if voiceset and VoiceSets[voiceset] then
 		local tab = VoiceSets[voiceset][group]
@@ -183,15 +181,12 @@ function meta:PlayVoiceGroup(group)
 end
 
 function meta:PlayDeathSound()
-	if self:CallMonsterFunction("PlayDeathSound") then return end
-
 	self:PlayVoiceGroup(VOICEGROUP_DEATH)
 end
 
 function meta:PlayPainSound(damage)
 	if CurTime() < self.NextPainSound then return end
 	local frac = self:Health() / self:GetMaxHealth()
-	if self:CallMonsterFunction("PlayPainSound", damage, frac) then return end
 
 	local snd
 	if frac <= 0.33 then

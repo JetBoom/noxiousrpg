@@ -347,8 +347,8 @@ end
 function PANEL:RefreshPosition()
 	local item = self:GetItem()
 	if not item then return end
-	local x = item.X or 0
-	local y = item.Y or 0
+
+	local x, y = item:GetContainerPos()
 
 	local parent = self:GetParent()
 	if not parent or not parent:Valid() then return self:SetPos(x, y) end

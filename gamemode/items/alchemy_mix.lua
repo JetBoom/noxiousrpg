@@ -1,4 +1,6 @@
 ITEM.Name = "alchemy mix"
+ITEM.DataIndex = 2
+
 ITEM.Model = Model("models/props_junk/garbage_glassbottle003a.mdl")
 ITEM.Mass = 1
 ITEM.MaxStack = 1

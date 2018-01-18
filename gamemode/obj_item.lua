@@ -1,13 +1,26 @@
 if SERVER then
-	util.AddNetworkString("noxrp_itemupdate")
+	util.AddNetworkString("rpg_item")
+	util.AddNetworkString("rpg_removeitemdata")
 end
 
 local rawget = rawget
+local rawset = rawset
 
 Item = {}
 Container = Item
 
 ITEM_DESERIALIZE_ENV = {Vector = Vector, Angle = Angle, Item = Item}
+
+function ITEM_NW_VAR(key, type, default, bits, onreceived)
+	local index = #ITEM.__nwvars
+
+	ITEM.__nwvars[index] = {index = index, key = key, read = net["Read"..type], write = net["Write"..type], bits = bits, default = default, onreceived = onreceived}
+	ITEM.__nwvars[key] = ITEM.__nwvars[index]
+end
+
+function ITEM_NW_VAR_NAME(default)
+	ITEM_NW_VAR("NameNW", "String", default)
+end
 
 local meta = {}
 
@@ -16,7 +29,7 @@ function Item.IsItem(object)
 end
 
 function meta:__tostring()
-	return "Item ["..self.ID.."]["..self:GetDataName().." "..self:GetAmount().."]"
+	return string.format("Item %d %s %d", self.ID, self:GetDataName(), self:GetAmount())
 end
 
 -- Two items are equal if and only if they share the same unique ID.
@@ -24,17 +37,52 @@ function meta:__eq(other)
 	return other ~= nil and Item.IsItem(other) and other.ID == self.ID
 end
 
--- If we index something, first try to get the item value
+if SERVER then
+function meta:__gc()
+	-- trash, trash fix for PVS issues
+	net.Start("rpg_removeitemdata")
+	net.WriteUInt(self.ID, 32)
+	net.Broadcast()
+end
+end
+
+-- If we index something, first try to get the networked var
+-- Then try to get something in the individual item instance
 -- Then try the meta table value (from meta functions)
 -- Then finally try the item data table (functions and default values from scripts)
--- This allows us to use dynamic prototyping
+-- This allows us to use robust prototyping
 function meta:__index(key)
+	local nwvar = rawget(self, "__nwvars")[key]
+
+	if nwvar then
+		local current = rawget(self, "__dt")[key]
+		if current == nil then
+			return nwvars[key].default
+		end
+
+		return current
+	end
+
 	local raw = rawget(self, key)
 	if raw ~= nil then
 		return raw
 	end
 
 	return meta[key] or GetItemData(rawget(self, "_D"))[key]
+end
+
+function meta:__newindex(key, value)
+	local nwvars = rawget(self, "__nwvars")
+
+	if nwvars[key] then
+		if rawget(self, "__dt")[key] ~= value then
+			rawset(self.__dt, key, value)
+
+			self:Synchronize(nil, key)
+		end
+	else
+		rawset(self, key, value)
+	end
 end
 
 -- Fetch something from the item prototype, ignoring the current instance and meta table.
@@ -51,7 +99,7 @@ meta.Serialize = meta._serialize
 
 -- NonStrict functions here are just for convenience.
 function meta:AddItemNonStrict(object, amount, autostack)
-	if not object or not self:IsContainer() then return false end
+	if not object or not self.IsContainer then return false end
 
 	if Item.IsItem(object) then
 		return self:AddItem(object, autostack)
@@ -74,7 +122,7 @@ end
 meta.GiveItemNonStrict = meta.AddItemNonStrict
 
 function meta:RemoveItemNonStrict(object, amount)
-	if not object or not self:IsContainer() then return false end
+	if not object or not self.IsContainer then return false end
 
 	if Item.IsItem(object) then
 		return self:RemoveItem(object, amount)
@@ -100,7 +148,7 @@ function meta:HasItemNonStrict(object, amount)
 		return self:GetItemAmountNonStrict(object) >= amount
 	end
 
-	if not object or not self:IsContainer() then return false end
+	if not object or not self.IsContainer then return false end
 
 	if Item.IsItem(object) then
 		return self:HasItem(object)
@@ -108,7 +156,7 @@ function meta:HasItemNonStrict(object, amount)
 
 	if type(object) == "string" then
 		for _, child in pairs(self:GetChildren(true)) do
-			if child:GetDataName() == object or child:IsContainer() and child:HasItemNonStrict(object) then return true end
+			if child:GetDataName() == object or child.IsContainer and child:HasItemNonStrict(object) then return true end
 		end
 	end
 
@@ -116,8 +164,9 @@ function meta:HasItemNonStrict(object, amount)
 end
 
 function meta:GetItemAmountNonStrict(object, inclusive)
+	if not object or not self.IsContainer then return 0 end
+
 	local amount = 0
-	if not object or not self:IsContainer() then return amount end
 
 	for _, child in pairs(self:GetChildren(inclusive)) do
 		if child:GetDataName() == object then
@@ -133,8 +182,9 @@ meta.ItemCountNonStrict = meta.GetItemAmountNonStrict
 
 -- Returns the total amount of items in this container. inclusive means don't search children.
 function meta:GetTotalItemCount(inclusive)
+	if not self.IsContainer then return 0 end
+
 	local amount = 0
-	if not self:IsContainer() then return amount end
 
 	for _, child in pairs(self:GetChildren(inclusive)) do
 		amount = amount + child:GetAmount()
@@ -146,8 +196,9 @@ meta.TotalItemCount = meta.GetTotalItemCount
 
 -- Returns the total amount of item objects in this container. inclusive means don't search children.
 function meta:GetTotalItemObjectCount(inclusive)
+	if not self.IsContainer then return 0 end
+
 	local amount = 0
-	if not self:IsContainer() then return amount end
 
 	for _, child in pairs(self:GetChildren(inclusive)) do
 		amount = amount + 1
@@ -189,7 +240,7 @@ end
 -- Adds an item to us.
 -- Returns true on success.
 function meta:AddItem(other, autostack, nosync)
-	if self:IsContainer() then
+	if self.IsContainer then
 		local capacity = self:GetCapacity()
 		if capacity and capacity ~= -1 and capacity <= self:TotalItemObjectCount() then
 			return false
@@ -227,7 +278,7 @@ function meta:CanStack(other)
 		return ret
 	end
 
-	-- TODO: better behavior. Check all non-system keys are the same
+	-- TODO: better behavior. Check all non-system and nwvar keys are the same
 	return self:GetDataName() == other:GetDataName() and self:GetName() == other:GetName() and self:GetModel() == other:GetModel() and (self.MaxStack == -1 or self.MaxStack >= self:GetAmount() + other:GetAmount())
 end
 
@@ -271,7 +322,7 @@ end
 
 -- Our dataname. Same as the item's file name in the items folder.
 function meta:GetDataName()
-	return self._D or "rock"
+	return self.DataName or "rock"
 end
 
 -- Usable? This function should exist both server-side and client-side, even if the function is empty.
@@ -330,10 +381,10 @@ end
 function meta:GetChildren(thisonly)
 	local tab = {}
 
-	if self:IsContainer() then
+	if self.IsContainer then
 		for _, item in pairs(self:GetContainer()) do
 			tab[#tab + 1] = item
-			if not thisonly and item:IsContainer() then
+			if not thisonly and item.IsContainer then
 				table.Add(tab, item:GetChildren())
 			end
 		end
@@ -344,7 +395,7 @@ end
 
 -- If this item is a container, does it hold Item other? Searches any children containers as well.
 function meta:ContainsItem(other)
-	if self:IsContainer() then
+	if self.IsContainer then
 		for _, item in pairs(self:GetContainer()) do
 			if other == item or item:ContainsItem(other) then
 				return true
@@ -355,14 +406,9 @@ function meta:ContainsItem(other)
 	return false
 end
 
--- Is this item a container?
-function meta:IsContainer()
-	return self.Container ~= nil
-end
-
 -- Returns our container if we have one.
 function meta:GetContainer()
-	return self.Container
+	return self.__container
 end
 
 -- This isn't really used anywhere else.
@@ -372,7 +418,7 @@ end
 
 -- Search for an item by Item or DataName.
 function meta:GetItemNonStrict(object, bInclusive)
-	if not self:IsContainer() then return end
+	if not self.IsContainer then return end
 
 	if Item.IsItem(object) then
 		return self:GetItem(object)
@@ -446,10 +492,26 @@ meta.IsDroppable = meta.GetDroppable
 
 -- Move the item around in a container. Nothing to do with entities.
 function meta:Move(x, y)
-	self.X = math.Clamp(math.ceil(x), 0, 2048)
-	self.Y = math.Clamp(math.ceil(y), 0, 2048)
+	self.ContainerSlot = self:XYToSlot(x, y)
+end
 
-	self:RadiusSync()
+function meta:SlotToXY(slot)
+	return bit.band(slot, 15) + 1, bit.rshift(slot, 4) + 1
+end
+
+function meta:XYToSlot(x, y)
+	x = math.Clamp(math.ceil(x), 1, 10) - 1
+	y = math.Clamp(math.ceil(y), 1, 10) - 1
+
+	return x + bit.lshift(y, 4)
+end
+
+function meta:GetContainerSlot()
+	return self.ContainerSlot or 0
+end
+
+function meta:GetContainerPos()
+	return self:SlotToXY(self:GetContainerSlot())
 end
 
 function meta:InRange(ent)
@@ -606,7 +668,7 @@ local function DoOnContentsChanged(root, item)
 end
 function meta:CallParentContentsChanged()
 	local root = self:GetRoot()
-	if root and Item.IsItem(root) and root:IsContainer() and root.OnContentsChanged then
+	if root and Item.IsItem(root) and root.IsContainer and root.OnContentsChanged then
 		timer.Simple(0, function() DoOnContentsChanged(root, self) end)
 	end
 end
@@ -632,14 +694,12 @@ function meta:GetRootOrSelf()
 end
 
 if SERVER then
--- Sync this item with the owner, if they're a player.
+-- Fully update this item with the owner, if they're a player.
 -- Optionally allows you to specify a player instead of sending to the owner.
-function meta:Synchronize(pl)
+function meta:Synchronize(pl, key_or_keys)
 	pl = pl or self:GetRootEntity()
 	if pl:IsValid() and pl:IsPlayer() then
-		net.Start("noxrp_itemupdate")
-			net.WriteString(self:Serialize())
-		net.Send(pl)
+		self:Update(pl, key_or_keys)
 	end
 end
 meta.Synch = meta.Synchronize
@@ -647,15 +707,13 @@ meta.Syncronize = meta.Synchronize
 meta.Sync = meta.Syncronize
 
 -- Syncs with every single client on the server. Probably shouldn't be used that much.
-function meta:GlobalSync()
-	net.Start("noxrp_itemupdate")
-		net.WriteString(self:Serialize())
-	net.Broadcast()
+function meta:GlobalSync(key_or_keys)
+	self:Update(nil, key_or_keys)
 end
 
 -- This is mostly used for syncing to anyone who can POTENTIALLY be looking at us. It's a bad workaround until a system is made to decide who is looking at an item at any given time.
 function meta:RadiusSync(radius)
-	if self:IsContainer() or self:GetParent() then -- Don't send unless we're in a container or we are a container.
+	if self.IsContainer or self:GetParent() then -- Don't send unless we're in a container or we are a container.
 		local rootentity = self:GetRootEntity()
 		if rootentity:IsValid() then
 			if rootentity:IsPlayer() then -- In a player inventory, only sync to that person.
@@ -708,7 +766,7 @@ meta.Remove = meta.Destroy
 
 -- Returns the data of our baseclass if we have one.
 function meta:GetBaseClass()
-	return GetItemData(self.Base)
+	return GetItemData(self.BaseIndex)
 end
 
 function meta:RemoveEntity()
@@ -741,7 +799,7 @@ function meta:SetParent(parent)
 	local curparent = self:GetParent()
 	if curparent == parent then return true end -- Skip it all if the new parent is the same as our current.
 
-	if parent and not parent:IsContainer() then return false end -- Either the parent is nothing or a container.
+	if parent and not parent.IsContainer then return false end -- Either the parent is nothing or a container.
 
 	local oldentity = self:GetRootEntity()
 
@@ -753,19 +811,12 @@ function meta:SetParent(parent)
 	end
 
 	if curparent then
-		curparent.Container[self.ID] = nil
+		curparent.__container[self.ID] = nil
 		curparent:RadiusSync()
 	end
 
 	if parent then
-		parent.Container[self.ID] = self
-
-		-- Might be our first time being in a container. Randomize the display position if so.
-		if not self.X then
-			self.X = math.random(0, 400)
-			self.Y = math.random(0, 400)
-		end
-
+		parent.__container[self.ID] = self
 		parent:RadiusSync()
 	end
 
@@ -792,7 +843,7 @@ end
 
 -- Returns the Item object that holds us, if any.
 function meta:GetParent()
-	if self.Parent then
+	if self.Parent > 0 then
 		return Items[self.Parent]
 	end
 end
@@ -800,7 +851,7 @@ end
 -- Returns the TOTAL mass of this item.
 -- This includes the mass of any children if we're a container as well as our own mass.
 function meta:GetMass(onlyself)
-	if onlyself or not self:IsContainer() then return self.Mass end
+	if onlyself or not self.IsContainer then return self.Mass end
 
 	local mass = self.Mass
 
@@ -827,10 +878,113 @@ if CLIENT then
 	end
 	meta.ItemPanel = meta.GetItemPanel
 
-	net.Receive("noxrp_itemupdate", function(len)
+	--[[net.Receive("noxrp_itemupdate", function(len)
 		local item = Deserialize("SRL={" .. net.ReadString() .. "}", ITEM_DESERIALIZE_ENV)
 		gamemode.Call("ItemReceived", item[1] or {})
+	end)]]
+
+	net.Receive("rpg_item", function(len)
+		local uid = net.ReadUInt(32)
+		local dataname = ITEM_DATA_ID[net.ReadUInt(16)] or "__base"
+
+		local item = Item({ID = uid}, dataname)
+		gamemode.Call("ItemReceived", item)
+
+		item:ReadNWVars()
 	end)
+
+	net.Receive("rpg_removeitemdata", function(len)
+		local uid = net.ReadUInt(32)
+
+		Items[uid] = nil
+	end)
+end
+
+function meta:WriteNWVars()
+	local netvars = rawget(self, "__nwvars")
+
+	net.WriteUInt(#netvars)
+
+	for i, netvar in ipairs(netvars) do
+		net.WriteUInt(i, 6)
+		netvar.write(self[netvar.key])
+	end
+end
+
+function meta:WriteNWVar(key)
+	local netvar = rawget(self, "__nwvars")[key]
+
+	if not netvar then
+		ErrorNoHalt(string.format("Invalid nwvar %s on item %s", key, tostring(self)))
+		return
+	end
+
+	net.WriteUInt(netvar.index, 6)
+	if netvar.bits then
+		netvar.write(self[netvar.key], netvar.bits)
+	else
+		netvar.write(self[netvar.key])
+	end
+end
+
+function meta:ReadNWVar()
+	local netindex = net.ReadUInt(6)
+
+	local netvar = rawget(self, "__nwvars")[netindex]
+
+	if not netvar then
+		ErrorNoHalt(string.format("Missing nwvar index %d for receive on %s", netindex, tostring(self)))
+		return
+	end
+
+	local oldvalue = self[netvar.key]
+
+	if netvar.bits then
+		self[netvar.key] = netvar.read()
+	else
+		self[netvar.key] = netvar.read(bits)
+	end
+
+	if netvar.onreceived then
+		netvar.onreceived(self, oldvalue)
+	end
+end
+
+function meta:ReadNWVars()
+	local num = net.ReadUInt(6)
+
+	for i=1, num do
+		self:ReadNWVar()
+	end
+end
+
+function meta:Update(rec, key_or_keys)
+	if CLIENT then return end
+
+	net.Start("rpg_item")
+
+	net.WriteUInt(self.ID, 32)
+	net.WriteUInt(self._D, 16)
+
+	if key_or_keys then
+		if type(key_or_keys) == "string" then
+			net.WriteUInt(1, 6)
+			self:WriteNWVar(key_or_keys)
+		else
+			net.WriteUInt(#key_or_keys, 6)
+			for i, key in pairs(key_or_keys) do
+				self:WriteNWVar(key_or_keys)
+			end
+		end
+	else
+		self:WriteNWVars()
+	end
+
+	if rec then
+		net.Send(rec)
+	else
+		net.Broadcast()
+	end
 end
 
 -- Use Item([data], [dataname], [amount]) instead of this Item.new. Handled by the __call metamethod below.
@@ -846,11 +1000,6 @@ function Item:new(data, dataname, amount)
 		for k, v in pairs(item) do
 			item[k] = nil
 		end
-		--[[for k, v in pairs(item) do
-			if data[k] == nil then
-				item[k] = nil
-			end
-		end]]
 	else
 		item = {}
 	end
@@ -863,32 +1012,33 @@ function Item:new(data, dataname, amount)
 
 	bIsNew = item._C == nil
 
+	if not item._D then
+		if dataname then
+			item._D = (GetAllItems()[dataname] or {}).DataIndex or 0
+		else
+			item._D = data._D
+		end
+	end
+
 	item.ID = item.ID or GetUID()
-	item._D = item._D or dataname or "__base"
+	item.__dt = item.__dt or {}
+	item.__container = item.__container or {}
 
 	setmetatable(item, meta)
 
 	local itemdata = GetItemData(item._D)
 	if not itemdata then
 		if bIsNew then
-			ErrorNoHalt("Missing item prototype for "..item._D..". Changing to generic item.")
+			ErrorNoHalt("Missing item prototype for "..item.ID..". Changing to generic item.")
 		else
-			ErrorNoHalt("Missing item prototype for "..item._D..". Changing to generic item. Do NOT delete or rename item scripts!!!")
+			ErrorNoHalt("Missing item prototype for "..item.ID..". Changing to generic item. Do NOT delete or change ItemIndex!!!")
 		end
 
-		item._D = "__base"
-		itemdata = GetItemData("__base")
+		itemdata = GetItemData(0)
 	end
 
 	if bIsNew then
 		item._C = os.time()
-
-		--[[local copydata = GetItemData(dataname, true)
-		if copydata then
-			for k, v in pairs(copydata) do
-				item[k] = v
-			end
-		end]]
 
 		if 0 < itemdata.MaxStack then
 			item:SetAmount(math.min(itemdata.MaxStack, item:GetAmount() or amount))

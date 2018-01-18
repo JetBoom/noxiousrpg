@@ -22,10 +22,8 @@ function ENT:PlayerSet(pPlayer, bExists)
 		pPlayer:SoftFreeze(true)
 		pPlayer:ResetJumpPower()
 
-		if 1 <= pPlayer:Health() and pPlayer:Alive() and not pPlayer:CallMonsterFunction("HandleKnockDownRagdoll", self) then
-			--if pPlayer:IsMonster() then
-				pPlayer:CreateRagdoll()
-			--end
+		if 1 <= pPlayer:Health() and pPlayer:Alive() then
+			pPlayer:CreateRagdoll()
 		end
 
 		self.Created = CurTime()
@@ -34,7 +32,6 @@ function ENT:PlayerSet(pPlayer, bExists)
 	self:SetEndTime(self.DieTime)
 
 	pPlayer:StatusWeaponHook3("PlayerKnockedDown", self, bExists, self:GetEndTime())
-	pPlayer:CallMonsterFunction("PlayerKnockedDown", self, bExists, self:GetEndTime())
 end
 
 function ENT:Think()
@@ -74,7 +71,7 @@ function ENT:Think()
 			heading:Normalize()
 			local startpos = owner:GetPos()
 			local tr = util.TraceHull({start = startpos, endpos = startpos + speed * FrameTime() * 2 * heading, mask = MASK_PLAYERSOLID, filter = owner, mins = owner:OBBMins(), maxs = owner:OBBMaxs()})
-			if tr.Hit and tr.HitNormal.z < 0.65 and 0 < tr.HitNormal:Length() and not (tr.Entity:IsValid() and tr.Entity:IsPlayer()) and not owner:CallMonsterFunction("KnockDownWallSlam", self, tr) then
+			if tr.Hit and tr.HitNormal.z < 0.65 and 0 < tr.HitNormal:Length() and not (tr.Entity:IsValid() and tr.Entity:IsPlayer()) then
 				self.AppliedWallDamage = true
 				self:SetState(1)
 				self:SetEndTime(ct + 9999)
@@ -93,8 +90,6 @@ function ENT:Think()
 				util.ScreenShake(tr.HitPos, 20, 0.5, 1, 128)
 
 				owner:TakeSpecialDamage(math.Clamp(speed * 0.025, 5, 30), DGMTYPE_IMPACT, owner:GetLastAttacker() or self, self, tr.HitPos)
-
-				owner:CallMonsterFunction("OnKnockDownWallSlam", self, tr)
 			end
 		end
 	end
@@ -124,15 +119,10 @@ function ENT:OnRemove()
 	if parent:IsValid() then
 		--[[parent:StopLuaAnimation("onground")
 		parent:StopLuaAnimation("thrown")]]
-
-		--if parent:IsMonster() then
-			parent:SetNoDraw(false)
-		--end
+		parent:SetNoDraw(false)
 		parent.KnockedDown = nil
 		parent:SoftFreeze(false)
 		parent:ResetJumpPower()
-
-		parent:CallMonsterFunction("EndKnockDown", self)
 
 		if parent:Alive() then
 			if self.ResetViewModel then

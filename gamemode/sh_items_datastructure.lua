@@ -8,5 +8,4 @@ Items = {}
 if SERVER then
 	setmetatable(Items, {__mode = "v"})
 end
--- The client just sort of has to absorb the resource hogging from this since lag and PVS can cause items to be garbage collected when they shouldn't be.
--- TODO: A better system that garbage collects correctly on both ends.
+-- For now every client receives a network message when an item is destroyed on the server which then deletes it on their client.

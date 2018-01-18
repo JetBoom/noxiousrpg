@@ -1,3 +1,5 @@
+ITEM.DataIndex = 28
+
 ITEM.Name = "chunk of ore"
 ITEM.Model = Model("models/props_junk/Rock001a.mdl")
 ITEM.PhysMaterial = "rock"

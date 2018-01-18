@@ -48,9 +48,6 @@ function zone.CanDoHostileAction(from, to)
 		return false
 	end
 
-	-- Monsters can always damage or be damaged.
-	if from:IsMonster() or to:IsMonster() then return true end
-
 	-- OLD:
 	-- Warring guilds can attack each other.
 	--[[if minruleset == RULESET_PROTECTED then
@@ -76,8 +73,6 @@ function zone.CanDoBeneficialAction(from, to)
 	if minruleset == RULESET_SAFE then
 		return false
 	end
-
-	if from:IsMonster() or to:IsMonster() then return true end
 
 	-- A person in a guild can only be helped by enemies (misfires) or people in the same guild.
 	if minruleset == RULESET_PROTECTED then

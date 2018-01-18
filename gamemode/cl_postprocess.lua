@@ -7,8 +7,6 @@ function GM:_RenderScreenspaceEffects()
 	if MySelf:IsGhost() then
 		self:GhostRenderScreenspaceEffects()
 	end
-
-	MySelf:CallMonsterFunction("RenderScreenspaceEffects")
 end
 
 local drawing = false

@@ -34,7 +34,6 @@ function meta:FixModelAngles(velocity)
 end
 
 function meta:SecondTick()
-	self:CallMonsterFunction("SecondTick")
 end
 
 function meta:SimulateItemRemove(ent, id, amount)

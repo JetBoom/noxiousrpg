@@ -1,3 +1,5 @@
+ITEM.DataIndex = 45
+
 ITEM.Base = "weaponbase"
 
 ITEM.Name = "haunt sword"

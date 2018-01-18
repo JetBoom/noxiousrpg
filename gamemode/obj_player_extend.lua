@@ -10,11 +10,10 @@ function meta:Thought(str)
 end
 
 function meta:Think()
-	self:CallMonsterFunction("Think")
 end
 
 function meta:CanUnderstand(other)
-	return self == other or not other:IsPlayer() or not other:IsMonster() or self:IsMonster() and other:GetMonsterClassTable().Group == self:GetMonsterClassTable().Group
+	return true --return self == other or not other:IsPlayer() or not other:IsMonster() or self:IsMonster() and other:GetMonsterClassTable().Group == self:GetMonsterClassTable().Group
 end
 
 function meta:GetDrowningThreshold()
@@ -181,9 +180,7 @@ function meta:SetGhost(ghost)
 	end
 end
 
-function meta:IsLivingHuman()
-	return self:Alive() and not self:IsMonster()
-end
+meta.IsLivingHuman = meta.Alive
 
 function meta:GetGhost()
 	return self.m_PlayerGhost
@@ -206,9 +203,7 @@ function meta:InsertRPGData(tab)
 	tab.Health = self:Health()
 	tab.Mana = self:GetMana()
 	--tab.Stamina = self:GetStamina()
-	tab.RPGIsMonster = self:IsMonster()
-	tab.IsDead = not self:Alive() and not tab.RPGIsMonster
-	tab.MonsterClass = self:GetMonsterClass()
+	tab.IsDead = not self:Alive()
 	tab.EquippedUIDs = self:GetEquippedUIDs()
 	tab.ItemData = self:GetContainer()
 	tab.Skills = self.Skills
@@ -265,22 +260,6 @@ function meta:GetEquippedUIDs()
 	return tab
 end
 
-function meta:CallMonsterFunction(funcname, ...)
-	if self:IsMonster() then
-		local tab = self:GetMonsterClassTable()
-		if tab and tab[funcname] then
-			return tab[funcname](tab, self, ...)
-		end
-	end
-end
-
-function meta:ImplicitCallMonsterFunction(funcname, ...)
-	local tab = self:GetMonsterClassTable()
-	if tab and tab[funcname] then
-		return tab[funcname](tab, self, ...)
-	end
-end
-
 local deftab = {}
 function meta:ResetData(tab)
 	tab = tab or deftab
@@ -322,36 +301,6 @@ function meta:ResetData(tab)
 	if CLIENT then
 		self:SetModelScale(tab.ModelScale or PLAYER_MODELSCALE, 0)
 	end
-end
-
-function meta:SetMonsterClass(id, onlyupdate, filter)
-	local classtab = MonsterClasses[id]
-	if not classtab then return false end
-
-	if not onlyupdate then
-		self.m_Class = id
-		self.m_ClassTable = classtab
-		if self:IsMonster() then
-			self:ResetData(classtab)
-		end
-	end
-
-	if SERVER then
-		umsg.Start("setmonsterclass", filter)
-			umsg.Entity(self)
-			umsg.Short(id)
-		umsg.End()
-	end
-
-	return true
-end
-
-function meta:GetMonsterClass()
-	return self.m_Class --return self:GetDTInt(2)
-end
-
-function meta:GetMonsterClassTable()
-	return self.m_ClassTable --return MonsterClasses[self:GetMonsterClass()]
 end
 
 function meta:SendHint()
@@ -408,10 +357,6 @@ end
 
 function meta:SendMessage(msg, col, allowreps)
 	self:SendLua("GAMEMODE:AddNotify2("..string.format("%q", tostring(msg))..","..tostring(col)..","..tostring(allowreps)..")")
-end
-
-function meta:IsMonster()
-	return self:Team() == TEAM_MONSTER
 end
 
 function meta:CallCastSpellEnchantments(...)
@@ -656,19 +601,6 @@ end
 
 local colTempCrim = Color(255, 255, 255, 255)
 function meta:GetNameColor(viewer)
-	if self:IsMonster() then
-		if viewer and viewer:IsMonster() then
-			local viewerclasstab = viewer:GetMonsterClassTable()
-			if viewerclasstab and viewerclasstab.Group == self:GetMonsterClassTable().Group then
-				return COLOR_LIMEGREEN
-			end
-
-			return COLOR_ORANGE
-		end
-
-		return COLOR_RED
-	end
-
 	if viewer and viewer ~= MySelf and viewer:IsInGuild() and self:IsInGuild() then
 		if viewer:IsInSameGuild(self) then
 			return COLOR_LIMEGREEN
@@ -823,7 +755,7 @@ end
 meta.SetSkillLocked = meta.SetNoSkillUps
 
 function meta:GetNoSkillUps()
-	return --[[self.m_NoSkillUps or]] self:IsMonster()
+	return false --[[self.m_NoSkillUps or]]
 end
 meta.IsSkillLocked = meta.GetNoSkillUps
 
@@ -880,14 +812,6 @@ function meta:SetAllSkills(amount, noupdate)
 end
 
 function meta:RPGName(viewer)
-	if self:IsMonster() then
-		if viewer and viewer:IsMonster() and viewer:GetMonsterClassTable().Group == self:GetMonsterClassTable().Group then
-			return self:Name()
-		end
-
-		return util.AOrAn(self:GetMonsterClassTable().Name)
-	end
-
 	return self:Name()
 end
 
@@ -922,11 +846,7 @@ function meta:TotalSkillGroup(groupid)
 end
 
 function meta:GetHostileSkillUpDifficulty(pl)
-	if pl:IsMonster() then
-		return (pl:GetMonsterClassTable().Rank or 1) * SKILLS_RMAX * 3
-	else
-		return (pl:TotalSkill() + 50 - self:TotalSkill()) * SKILLS_RMAX
-	end
+	return (pl:TotalSkill() + 50 - self:TotalSkill()) * SKILLS_RMAX
 end
 
 function meta:AddSkill(skillid, amount, noupdate)
@@ -934,15 +854,6 @@ function meta:AddSkill(skillid, amount, noupdate)
 end
 
 function meta:GetSkill(skillid)
-	if self:IsMonster() then
-		local skills = self:GetMonsterClassTable().Skills
-		if skills then
-			return skills[skillid] or 0
-		end
-
-		return 0
-	end
-
 	return (self.Skills or self)[skillid] or 0
 end
 
@@ -1028,15 +939,19 @@ function meta:ResetSpeed(skill)
 	if self:IsGhost() then
 		self:SetSpeed(300)
 	else
-		stat.Start(self:CallMonsterFunction("GetSpeed", skill) or GAMEMODE:GetPlayerSpeed(skill or self:GetSkill(SKILL_DEXTERITY)))
-			self:StatusWeaponHook0("ResetSpeed")
+		stat.Start(GAMEMODE:GetPlayerSpeed(skill or self:GetSkill(SKILL_DEXTERITY)))
+
+		self:StatusWeaponHook0("ResetSpeed")
+
 		self:SetSpeed(stat.Get())
 	end
 end
 
 function meta:ResetJumpPower(skill)
-	stat.Start(self:CallMonsterFunction("GetJumpPower", skill) or GAMEMODE:GetPlayerJumpPower(skill or self:GetSkill(SKILL_DEXTERITY)))
-		self:StatusWeaponHook0("ResetJumpPower")
+	stat.Start(GAMEMODE:GetPlayerJumpPower(skill or self:GetSkill(SKILL_DEXTERITY)))
+
+	self:StatusWeaponHook0("ResetJumpPower")
+
 	self:SetJumpPower(stat.Get())
 end
 

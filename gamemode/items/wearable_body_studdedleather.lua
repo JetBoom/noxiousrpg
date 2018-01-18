@@ -1,3 +1,5 @@
+ITEM.DataIndex = 53
+
 ITEM.Base = "wearablebase"
 
 ITEM.Name = "studded leather armor"
