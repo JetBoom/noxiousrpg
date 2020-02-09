@@ -1026,8 +1026,6 @@ function Item:new(data, dataname, amount)
 	item.__dt = item.__dt or {}
 	item.__container = item.__container or {}
 
-	setmetatable(item, meta)
-
 	local itemdata = GetItemData(item._D)
 	if not itemdata then
 		if bIsNew then
@@ -1041,6 +1039,8 @@ function Item:new(data, dataname, amount)
 
 	-- For quick access
 	item.__nwvars = itemdata.__nwvars or {}
+
+	setmetatable(item, meta)
 
 	if bIsNew then
 		item._C = os.time()
