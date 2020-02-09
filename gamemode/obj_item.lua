@@ -1022,6 +1022,7 @@ function Item:new(data, dataname, amount)
 
 	item.ID = item.ID or GetUID()
 	item.__dt = item.__dt or {}
+	item.__nwvars = item.__nwvars or {}
 	item.__container = item.__container or {}
 
 	setmetatable(item, meta)
