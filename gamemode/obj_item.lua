@@ -12,6 +12,8 @@ Container = Item
 ITEM_DESERIALIZE_ENV = {Vector = Vector, Angle = Angle, Item = Item}
 
 function ITEM_NW_VAR(key, type, default, bits, onreceived)
+	ITEM.__nwvars = ITEM.__nwvars or {}
+
 	local index = #ITEM.__nwvars
 
 	ITEM.__nwvars[index] = {index = index, key = key, read = net["Read"..type], write = net["Write"..type], bits = bits, default = default, onreceived = onreceived}
@@ -1022,7 +1024,6 @@ function Item:new(data, dataname, amount)
 
 	item.ID = item.ID or GetUID()
 	item.__dt = item.__dt or {}
-	item.__nwvars = item.__nwvars or {}
 	item.__container = item.__container or {}
 
 	setmetatable(item, meta)
@@ -1037,6 +1038,9 @@ function Item:new(data, dataname, amount)
 
 		itemdata = GetItemData(0)
 	end
+
+	-- For quick access
+	item.__nwvars = itemdata.__nwvars or {}
 
 	if bIsNew then
 		item._C = os.time()
